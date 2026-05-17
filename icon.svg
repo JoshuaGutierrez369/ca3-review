@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#1a237e"/>
+  <rect x="60" y="80" width="392" height="280" rx="16" fill="#283593"/>
+  <line x1="100" y1="150" x2="412" y2="150" stroke="#90caf9" stroke-width="14" stroke-linecap="round"/>
+  <line x1="100" y1="210" x2="340" y2="210" stroke="#90caf9" stroke-width="14" stroke-linecap="round"/>
+  <line x1="100" y1="270" x2="380" y2="270" stroke="#90caf9" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="390" cy="210" r="22" fill="#4caf50"/>
+  <path d="M378 210 l8 9 l18-18" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- antenna -->
+  <line x1="256" y1="360" x2="256" y2="430" stroke="#90caf9" stroke-width="14" stroke-linecap="round"/>
+  <line x1="200" y1="430" x2="312" y2="430" stroke="#90caf9" stroke-width="14" stroke-linecap="round"/>
+  <path d="M186 340 Q220 290 256 280 Q292 290 326 340" stroke="#ffd740" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <path d="M156 360 Q210 280 256 260 Q302 280 356 360" stroke="#ffd740" stroke-width="7" fill="none" stroke-linecap="round" opacity=".6"/>
+  <!-- CA3 text -->
+  <text x="256" y="490" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="52" fill="#90caf9" letter-spacing="2">CA3</text>
+</svg>
