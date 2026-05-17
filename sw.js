@@ -1,7 +1,7 @@
-﻿// Service Worker for CA3 Communications Reviewer â€” v3
+// Service Worker for CA3 Communications Reviewer — v3
 const CACHE = 'ca3-v3';
 const FILES = [
-  './index.html',
+  './exam_v3.html',
   './manifest.json',
   './icon.svg'
 ];
@@ -41,11 +41,10 @@ self.addEventListener('fetch', function(e) {
         }
         return res;
       }).catch(function() {
-        return cached || new Response('Offline â€” please reload when connected.', {
+        return cached || new Response('Offline — please reload when connected.', {
           status: 503, headers: {'Content-Type': 'text/plain'}
         });
       });
     })
   );
 });
-

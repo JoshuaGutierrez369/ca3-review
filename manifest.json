@@ -1,8 +1,8 @@
-﻿{
+{
   "name": "CA3 Communications Reviewer",
   "short_name": "CA3 Review",
-  "description": "ECEN Competency Appraisal 3 â€” Full Reviewer & Quiz Bee with 1000+ questions",
-  "start_url": "./index.html",
+  "description": "ECEN Competency Appraisal 3 — Full Reviewer & Quiz Bee with 1000+ questions",
+  "start_url": "./exam_v3.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0d1117",
@@ -29,16 +29,15 @@
       "name": "Quiz Bee",
       "short_name": "Quiz",
       "description": "Jump straight into a quiz",
-      "url": "./index.html#quiz",
+      "url": "./exam_v3.html#quiz",
       "icons": [{ "src": "./icon.svg", "sizes": "any" }]
     },
     {
       "name": "Dashboard",
       "short_name": "Stats",
       "description": "View your mastery dashboard",
-      "url": "./index.html#dashboard",
+      "url": "./exam_v3.html#dashboard",
       "icons": [{ "src": "./icon.svg", "sizes": "any" }]
     }
   ]
 }
-
