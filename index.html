@@ -4147,4 +4147,36 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('./sw.js').catch(function(){});
   }
 </script>
+<!-- FORCE-HOME-FAILSAFE -->
+<script>
+(function(){
+  function showHome(){
+    var o=document.getElementById('quiz-overlay');
+    if(!o) return;
+    // Force display via JS priority flag — beats every CSS rule
+    o.style.setProperty('display','flex','important');
+    o.style.setProperty('position','fixed','important');
+    o.style.setProperty('inset','0','important');
+    o.style.setProperty('z-index','9999','important');
+    o.style.setProperty('background','#0d1117','important');
+    o.style.setProperty('flex-direction','column','important');
+    o.style.setProperty('overflow-y','auto','important');
+    o.classList.add('open');
+    var l=document.getElementById('quiz-landing');
+    if(l){l.style.setProperty('display','flex','important');}
+    var s=document.getElementById('quiz-setup');
+    if(s) s.style.display='none';
+    var q=document.getElementById('quiz-screen');
+    if(q) q.style.display='none';
+    var r=document.getElementById('quiz-results');
+    if(r) r.style.display='none';
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', showHome);
+  } else {
+    showHome();
+  }
+})();
+</script>
+<!-- /FORCE-HOME-FAILSAFE -->
 </body></html>
