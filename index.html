@@ -3582,7 +3582,15 @@ function spacedSort(pool){
 }
 
 function el(id){return document.getElementById(id);}
+/* Clear inline !important from home-screen failsafe so closeQuizOverlay/showSetup can take effect */
+function clearForcedHomeStyles(){
+  var o=document.getElementById('quiz-overlay');
+  if(o){['display','position','inset','z-index','background','flex-direction','overflow-y'].forEach(function(k){o.style.removeProperty(k);});}
+  var l=document.getElementById('quiz-landing');
+  if(l) l.style.removeProperty('display');
+}
 function openQuizOverlay(){
+  clearForcedHomeStyles();
   document.getElementById('quiz-overlay').classList.add('open');
   showLanding();
 }
@@ -3591,20 +3599,19 @@ function openQuizBee(){
   showSetup();
 }
 function closeQuizOverlay(){
+  clearForcedHomeStyles();
   document.getElementById('quiz-overlay').classList.remove('open');
   stopTimer();
 }
-function openQuizBee(){
-  document.getElementById('quiz-overlay').classList.add('open');
-  showSetup();
-}
 function showLanding(){
+  clearForcedHomeStyles();
   el('quiz-landing').style.display='flex';
   el('quiz-setup').style.display='none';
   el('quiz-screen').style.display='none';
   el('quiz-results').style.display='none';
 }
 function showSetup(){
+  clearForcedHomeStyles();
   el('quiz-landing').style.display='none';
   el('quiz-setup').style.display='block';
   el('quiz-screen').style.display='none';
@@ -4120,56 +4127,32 @@ function shuffle(a){
   for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}
   return arr;
 }
-function openQuizOverlay(){
-  document.getElementById('quiz-overlay').classList.add('open');
-  showLanding();
-}
-function closeQuizOverlay(){
-  document.getElementById('quiz-overlay').classList.remove('open');
-  stopTimer();
-}
-function showLanding(){
-  el('quiz-landing').style.display='flex';
-  el('quiz-setup').style.display='none';
-  el('quiz-screen').style.display='none';
-  el('quiz-results').style.display='none';
-}
-function showSetup(){
-  el('quiz-landing').style.display='none';
-  el('quiz-setup').style.display='block';
-  el('quiz-screen').style.display='none';
-  el('quiz-results').style.display='none';
-  buildTopicGrid();
-}
 // Register service worker for offline PWA support
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
     navigator.serviceWorker.register('./sw.js').catch(function(){});
   }
 </script>
-<!-- FORCE-HOME-FAILSAFE -->
+<!-- FORCE-HOME-FAILSAFE: ensure home shows even if another script errors; reuses openQuizOverlay (no inline !important — that blocked mode buttons) -->
 <script>
 (function(){
   function showHome(){
+    if(typeof openQuizOverlay==='function'){
+      openQuizOverlay();
+      return;
+    }
     var o=document.getElementById('quiz-overlay');
-    if(!o) return;
-    // Force display via JS priority flag — beats every CSS rule
-    o.style.setProperty('display','flex','important');
-    o.style.setProperty('position','fixed','important');
-    o.style.setProperty('inset','0','important');
-    o.style.setProperty('z-index','9999','important');
-    o.style.setProperty('background','#0d1117','important');
-    o.style.setProperty('flex-direction','column','important');
-    o.style.setProperty('overflow-y','auto','important');
-    o.classList.add('open');
-    var l=document.getElementById('quiz-landing');
-    if(l){l.style.setProperty('display','flex','important');}
-    var s=document.getElementById('quiz-setup');
-    if(s) s.style.display='none';
-    var q=document.getElementById('quiz-screen');
-    if(q) q.style.display='none';
-    var r=document.getElementById('quiz-results');
-    if(r) r.style.display='none';
+    if(o){
+      o.classList.add('open');
+      var l=document.getElementById('quiz-landing');
+      if(l) l.style.display='flex';
+      var s=document.getElementById('quiz-setup');
+      if(s) s.style.display='none';
+      var q=document.getElementById('quiz-screen');
+      if(q) q.style.display='none';
+      var r=document.getElementById('quiz-results');
+      if(r) r.style.display='none';
+    }
   }
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded', showHome);
