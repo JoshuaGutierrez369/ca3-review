@@ -3635,40 +3635,58 @@ function buildTopicGrid(){
     secTitles[q.section]=q.secTitle;
   });
   TOPIC_GROUPS.forEach(function(g){
-    /* group header row */
-    var hdr=document.createElement('div');
-    hdr.className='topic-grp-hdr';
     var grpSidsInData=g.sids.filter(function(s){return secs[s];});
     if(!grpSidsInData.length) return;
-    hdr.innerHTML='<span>'+g.grp+'</span>'
-      +'<button onclick="selectGroup('+JSON.stringify(g.sids)+',true)" title="Select all in group">All</button>'
-      +'<button onclick="selectGroup('+JSON.stringify(g.sids)+',false)" title="Deselect all in group">None</button>';
+    /* group header */
+    var hdr=document.createElement('div');
+    hdr.className='topic-grp-hdr';
+    var allBtn=document.createElement('button');
+    allBtn.textContent='All';
+    allBtn.title='Select all in group';
+    allBtn.addEventListener('click',function(e){e.stopPropagation();selectGroup(g.sids,true);});
+    var noneBtn=document.createElement('button');
+    noneBtn.textContent='None';
+    noneBtn.title='Deselect all in group';
+    noneBtn.addEventListener('click',function(e){e.stopPropagation();selectGroup(g.sids,false);});
+    var hdrSpan=document.createElement('span');
+    hdrSpan.textContent=g.grp;
+    hdr.appendChild(hdrSpan);
+    hdr.appendChild(allBtn);
+    hdr.appendChild(noneBtn);
     grid.appendChild(hdr);
-    /* topic labels */
+    /* topic items — use div not label to avoid double-click-event from hidden input */
     grpSidsInData.forEach(function(sid){
       var acc=getTopicAccuracy(sid);
       var pct=acc.attempted?Math.round(acc.correct/acc.attempted*100):null;
-      var pctStr=pct!==null?(' — '+pct+'%'):'';
-      var lbl=document.createElement('label');
-      lbl.className='topic-label sel';
-      lbl.dataset.sid=sid;
-      /* visible checkmark box */
+      var pctStr=pct!==null?(' \u2014 '+pct+'%'):'';
+      var item=document.createElement('div');
+      item.className='topic-label sel';
+      item.dataset.sid=sid;
+      item.setAttribute('role','checkbox');
+      item.setAttribute('aria-checked','true');
+      item.setAttribute('tabindex','0');
+      /* checkmark box */
       var chk=document.createElement('span');
       chk.className='chk';
       chk.textContent='\u2713';
-      lbl.appendChild(chk);
-      var cb=document.createElement('input');
-      cb.type='checkbox';cb.checked=true;
-      lbl.appendChild(cb);
+      item.appendChild(chk);
+      /* title */
       var txt=document.createElement('span');
       txt.textContent=secTitles[sid]+' ('+secs[sid]+')'+pctStr;
-      lbl.appendChild(txt);
-      lbl.addEventListener('click',function(){
-        lbl.classList.toggle('sel');
-        chk.textContent=lbl.classList.contains('sel')? '\u2713' : '';
+      item.appendChild(txt);
+      /* click to toggle */
+      item.addEventListener('click',function(e){
+        e.stopPropagation();
+        var isSel=item.classList.toggle('sel');
+        chk.textContent=isSel?'\u2713':'';
+        item.setAttribute('aria-checked', isSel?'true':'false');
         updateSelCounter();
       });
-      grid.appendChild(lbl);
+      /* keyboard support */
+      item.addEventListener('keydown',function(e){
+        if(e.key===' '||e.key==='Enter'){e.preventDefault();item.click();}
+      });
+      grid.appendChild(item);
     });
   });
   updateSelCounter();
@@ -3681,17 +3699,27 @@ function updateSelCounter(){
 }
 function selectAllTopics(v){
   document.querySelectorAll('#topic-grid .topic-label').forEach(function(l){
-    if(v){l.classList.add('sel');l.querySelector('.chk').textContent='\u2713';}
-    else{l.classList.remove('sel');l.querySelector('.chk').textContent='';}
+    if(v){
+      l.classList.add('sel');
+      l.setAttribute('aria-checked','true');
+      var c=l.querySelector('.chk');if(c)c.textContent='\u2713';
+    } else {
+      l.classList.remove('sel');
+      l.setAttribute('aria-checked','false');
+      var c=l.querySelector('.chk');if(c)c.textContent='';
+    }
   });
   updateSelCounter();
 }
 function selectGroup(sids,v){
   sids.forEach(function(sid){
-    var lbl=document.querySelector('#topic-grid .topic-label[data-sid="'+sid+'"]');
-    if(!lbl) return;
-    if(v){lbl.classList.add('sel');lbl.querySelector('.chk').textContent='\u2713';}
-    else{lbl.classList.remove('sel');lbl.querySelector('.chk').textContent='';}
+    var item=document.querySelector('#topic-grid .topic-label[data-sid="'+sid+'"]');
+    if(item){
+      if(v){item.classList.add('sel');item.setAttribute('aria-checked','true');}
+      else{item.classList.remove('sel');item.setAttribute('aria-checked','false');}
+      var chk=item.querySelector('.chk');
+      if(chk)chk.textContent=v?'\u2713':'';
+    }
   });
   updateSelCounter();
 }
