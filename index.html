@@ -408,20 +408,61 @@ nav#toc li a{display:flex;align-items:center}
 </div>
 <section class="ps" id="mod-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="mod-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>MODULATION – PROBLEM SET 1 <span class="bc">20 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Noise &amp; Level Units</h4>
+<h4>Overview — Noise &amp; Signal Levels</h4>
+<p>All electronic communication systems are fundamentally limited by <b>noise</b> — unwanted electrical signals that corrupt the desired information signal. According to Frenzel (<i>Principles of Electronic Communication Systems</i>, 4th ed., Ch. 2), noise is the primary factor limiting the sensitivity and performance of any receiver. Understanding noise types, measuring signal levels in decibels, and calculating noise figure are essential skills for any communication engineer.</p>
+<p>The <b>decibel (dB)</b> was adopted because human hearing responds logarithmically to sound intensity (Tomasi, <i>Electronic Communications Systems</i>, 5th ed., Ch. 1). It compresses the enormous dynamic range of signals into manageable numbers. A signal 1,000,000 times stronger is simply +60 dB — a number easy to add and subtract as signals pass through gain and loss stages.</p>
 <div class="formula-row">
-  <div class="formula-box">dB = 10·log(P₂/P₁) = 20·log(V₂/V₁)</div>
-  <div class="formula-box">dBm = 10·log(P / 1mW)</div>
-  <div class="formula-box">dBV = 20·log(V / 1V)</div>
+  <div class="formula-box">Power: dB = 10·log₁₀(P₂/P₁)</div>
+  <div class="formula-box">Voltage: dB = 20·log₁₀(V₂/V₁)</div>
+  <div class="formula-box">dBm = 10·log₁₀(P / 1 mW)</div>
+  <div class="formula-box">dBW = 10·log₁₀(P / 1 W)</div>
+  <div class="formula-box">dBμV = 20·log₁₀(V / 1 μV)</div>
 </div>
+<h4>Types of Electronic Noise</h4>
+<p>Blake (<i>Electronic Communication Systems</i>, 2nd ed., Ch. 1) classifies noise into internal and external categories. The most fundamental is <b>thermal (Johnson-Nyquist) noise</b>, caused by random motion of electrons in any resistive element at temperature above absolute zero. Its power: P = kTB, where k = 1.38×10⁻²³ J/K, T is temperature in Kelvin, B is bandwidth in Hz. At room temperature (290 K), this equals −174 dBm/Hz.</p>
 <ul>
-  <li><b>Noise Figure (NF)</b> = 10·log(F); F = SNR_in/SNR_out; ideal F = 1 (0 dB)</li>
-  <li><b>Thermal noise</b>: P_n = kTB (k=1.38×10⁻²³ J/K); −174 dBm/Hz at 290 K</li>
-  <li><b>Cascade NF</b>: F_total = F₁ + (F₂−1)/G₁ + (F₃−1)/(G₁G₂) + …</li>
-  <li><b>Noise types</b>: thermal, shot, flicker (1/f), burst, avalanche, intermodulation</li>
-  <li><b>Image frequency</b>: f_image = f_s ± 2·f_IF (superheterodyne)</li>
+  <li><b>Thermal (Johnson) noise</b>: P_n = kTB; RMS voltage V_n = √(4kTBR); white noise (flat spectrum); all components above 0 K [Frenzel, Ch. 2]</li>
+  <li><b>Shot noise</b>: discrete electron flow across junctions; I_shot = √(2·q·I_DC·B), q = 1.6×10⁻¹⁹ C</li>
+  <li><b>Flicker (1/f) noise</b>: dominant at low frequencies; power ∝ 1/f; significant in MOSFETs and carbon resistors</li>
+  <li><b>Burst (popcorn) noise</b>: random step changes in current; audible as popping; caused by heavy-metal ion contamination in IC junctions</li>
+  <li><b>Avalanche noise</b>: reverse-biased junction in breakdown; used in noise diodes</li>
+  <li><b>Atmospheric noise</b>: lightning discharges; strongest below 30 MHz; impulsive</li>
+  <li><b>Cosmic/galactic noise</b>: radio emissions from sun and stars; 8 MHz–1.43 GHz; modeled as noise temperature</li>
 </ul>
-<div class="formula-row"><div class="formula-box">Pad input = output level + pad loss (dB)</div></div>
+<h4>Noise Figure &amp; Friis Formula</h4>
+<p>The noise figure (NF) quantifies how much noise a device <i>adds</i> as signal passes through. An ideal noiseless amplifier has NF = 0 dB (F = 1). The <b>Friis formula</b> shows that the first amplifier stage dominates cascade noise — which is why Low Noise Amplifiers (LNAs) are always placed first in receiver chains (Tomasi, Ch. 1).</p>
+<div class="formula-row">
+  <div class="formula-box">F = SNR_in / SNR_out</div>
+  <div class="formula-box">NF = 10·log₁₀(F) dB</div>
+  <div class="formula-box">F_total = F₁ + (F₂−1)/G₁ + (F₃−1)/(G₁G₂) + … [Friis]</div>
+  <div class="formula-box">T_eq = (F−1)·T₀ &nbsp; T₀ = 290 K</div>
+</div>
+<div class="svg-wrap"><svg width="420" height="80" viewBox="0 0 420 80" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Friis Cascade — first stage NF dominates</text>
+<rect x="8" y="20" width="70" height="36" rx="4" fill="#1a237e" stroke="#90caf9" stroke-width="1.5"/>
+<text x="43" y="34" text-anchor="middle" font-size="9" fill="#fff">LNA</text>
+<text x="43" y="48" text-anchor="middle" font-size="7" fill="#a5d6a7">NF=1.5dB G=20dB</text>
+<line x1="78" y1="38" x2="105" y2="38" stroke="#90caf9" stroke-width="1.5"/>
+<rect x="105" y="20" width="70" height="36" rx="4" fill="#283593" stroke="#7986cb" stroke-width="1.5"/>
+<text x="140" y="34" text-anchor="middle" font-size="9" fill="#fff">Mixer</text>
+<text x="140" y="48" text-anchor="middle" font-size="7" fill="#ffd740">NF=8dB G=-6dB</text>
+<line x1="175" y1="38" x2="202" y2="38" stroke="#90caf9" stroke-width="1.5"/>
+<rect x="202" y="20" width="70" height="36" rx="4" fill="#283593" stroke="#7986cb" stroke-width="1.5"/>
+<text x="237" y="34" text-anchor="middle" font-size="9" fill="#fff">IF Amp</text>
+<text x="237" y="48" text-anchor="middle" font-size="7" fill="#ffd740">NF=6dB G=30dB</text>
+<line x1="272" y1="38" x2="299" y2="38" stroke="#90caf9" stroke-width="1.5"/>
+<rect x="299" y="20" width="115" height="36" rx="4" fill="#1b3a00" stroke="#4caf50" stroke-width="1.5"/>
+<text x="356" y="34" text-anchor="middle" font-size="9" fill="#fff">Detector</text>
+<text x="356" y="48" text-anchor="middle" font-size="7" fill="#a5d6a7">NF_total ≈ 1.8 dB</text>
+<text x="10" y="72" font-size="7" fill="#546e7a">Tip: lowest-NF stage FIRST; highest-gain FIRST minimises F₂, F₃ contribution</text>
+</svg></div>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. McGraw-Hill. Ch. 2.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Pearson. Ch. 1.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Delmar. Ch. 1.</li>
+  <li>Haykin, S. (2001). <i>Communication Systems</i>, 4th ed. Wiley. Ch. 8.</li>
+</ul>
 </div></div>
 <div class="q" id="mod-ps1-q1" data-ans="c"><div class="qh"><div class="qn">1</div><div class="qt">A portion in a communications system, which processes the information so that it will become suitable to the characteristic of the transmission medium</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Encoder</li><li data-ltr="b">b. Modulation</li><li class="ok" data-ltr="c">c. Transmitter</li><li data-ltr="d">d. Multiplexer</li></ul></div>
 <div class="q" id="mod-ps1-q2" data-ans="b"><div class="qh"><div class="qn">2</div><div class="qt">Signal whose physical quantity varies continuously with time</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Digital</li><li class="ok" data-ltr="b">b. Analog</li><li data-ltr="c">c. Discrete</li><li data-ltr="d">d. Information</li></ul></div>
@@ -446,30 +487,51 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="mod-ps2" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="mod-ps2"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>MODULATION – PROBLEM SET 2 <span class="bc">30 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Amplitude Modulation (AM)</h4>
-<div class="svg-wrap"><svg width="380" height="110" viewBox="0 0 380 110" style="background:#1a237e11;border-radius:6px">
-<text x="10" y="14" font-size="10" fill="#3f51b5" font-family="monospace" font-weight="bold">AM — carrier amplitude follows modulating signal</text>
-<polyline points="10,55 24,40 38,55 52,70 66,55 80,40 94,55 108,70 122,55 136,40 150,55 164,70 178,55 192,40 206,55 220,70 234,55 248,40 262,55 276,70 290,55 304,40 318,55 332,70 346,55 360,40 374,55" fill="none" stroke="#90caf9" stroke-width="1.2" opacity=".5"/>
-<path d="M10,55 Q18,22 30,55 Q42,88 54,55 Q66,22 78,55 Q90,88 102,55 Q114,18 126,55 Q138,92 150,55 Q162,18 174,55 Q186,92 198,55 Q210,22 222,55 Q234,88 246,55 Q258,22 270,55 Q282,88 294,55 Q306,18 318,55 Q330,92 342,55 Q354,22 366,55 Q372,40 374,55" fill="none" stroke="#42a5f5" stroke-width="2"/>
-<path d="M10,55 Q46,5 90,55 Q134,105 178,55 Q222,5 270,55 Q314,105 360,55" fill="none" stroke="#ffd740" stroke-width="1.5" stroke-dasharray="5,3"/>
-<text x="10" y="105" font-size="9" fill="#90a4ae" font-family="monospace">─── AM Signal   ─ ─ Envelope (modulating signal)   ··· Carrier</text>
-</svg></div>
+<h4>Overview — Amplitude Modulation</h4>
+<p>Amplitude Modulation (AM) varies the <b>amplitude</b> of a high-frequency carrier in proportion to the instantaneous value of a lower-frequency intelligence signal (Frenzel, Ch. 3). The modulated signal v(t) = V_c[1 + m·sin(2πf_m·t)]·sin(2πf_c·t) expands — via the product-to-sum identity — into <b>three spectral lines</b>: carrier at f_c, upper sideband (USB) at f_c + f_m, and lower sideband (LSB) at f_c − f_m (Tomasi, Ch. 3). Commercial AM broadcasting occupies 535–1705 kHz with 10 kHz channel spacing.</p>
 <div class="formula-row">
-  <div class="formula-box">m = (V_max−V_min)/(V_max+V_min)</div>
-  <div class="formula-box">P_T = P_c(1 + m²/2)</div>
-  <div class="formula-box">BW = 2·f_m</div>
-</div>
-<ul>
-  <li>Each sideband power = m²·P_c/4 (at m=1 → 25% of P_c each)</li>
-  <li>Over-modulation (m&gt;1): splatter, distortion</li>
-  <li><b>SSB (J3E)</b>: saves 2/3 power, BW = f_m; carrier suppressed by balanced modulator</li>
-  <li><b>DSB-SC (H3E)</b>: carrier suppressed; double sideband, no carrier</li>
-  <li><b>VSB</b>: used in TV (vestigial sideband)</li>
-</ul>
-<div class="formula-row">
+  <div class="formula-box">m = V_m / V_c = (V_max−V_min)/(V_max+V_min)</div>
   <div class="formula-box">USB = f_c + f_m &nbsp; LSB = f_c − f_m</div>
-  <div class="formula-box">Power saving (carrier suppressed, m=1) = 66.7%</div>
+  <div class="formula-box">BW = 2·f_m(max)</div>
+  <div class="formula-box">P_T = P_c(1 + m²/2)</div>
+  <div class="formula-box">P_SB(each) = m²·P_c / 4</div>
+  <div class="formula-box">Efficiency = (m²/2)/(1 + m²/2)×100%</div>
 </div>
+<div class="svg-wrap"><svg width="420" height="140" viewBox="0 0 420 140" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">AM Spectrum (m=0.8, f_c=1 MHz, f_m=5 kHz)</text>
+<line x1="30" y1="125" x2="400" y2="125" stroke="#546e7a" stroke-width="1"/>
+<line x1="30" y1="20" x2="30" y2="125" stroke="#546e7a" stroke-width="1"/>
+<line x1="130" y1="125" x2="130" y2="75" stroke="#ffd740" stroke-width="9" stroke-linecap="round"/>
+<text x="130" y="68" text-anchor="middle" font-size="7" fill="#ffd740">LSB</text>
+<text x="130" y="135" text-anchor="middle" font-size="7" fill="#ffd740">995 kHz</text>
+<line x1="210" y1="125" x2="210" y2="22" stroke="#90caf9" stroke-width="11" stroke-linecap="round"/>
+<text x="210" y="16" text-anchor="middle" font-size="7" fill="#90caf9">Carrier V_c</text>
+<text x="210" y="135" text-anchor="middle" font-size="7" fill="#90caf9">1000 kHz</text>
+<line x1="290" y1="125" x2="290" y2="75" stroke="#ffd740" stroke-width="9" stroke-linecap="round"/>
+<text x="290" y="68" text-anchor="middle" font-size="7" fill="#ffd740">USB</text>
+<text x="290" y="135" text-anchor="middle" font-size="7" fill="#ffd740">1005 kHz</text>
+<text x="340" y="85" font-size="7" fill="#78909c">Each SB = m²P_c/4</text>
+<text x="340" y="96" font-size="7" fill="#78909c">m=1: 25% P_c each</text>
+<text x="340" y="107" font-size="7" fill="#a5d6a7">Efficiency 33.3% @ m=1</text>
+</svg></div>
+<h4>AM Variants &amp; ITU Designators</h4>
+<p>Because most AM power sits in the carrier (which carries no information), engineers developed variants that suppress the carrier and/or one sideband, dramatically improving efficiency (Blake, Ch. 3).</p>
+<ul>
+  <li><b>A3E</b> — Double sideband full carrier (standard AM broadcast)</li>
+  <li><b>J3E (SSB-SC)</b> — Carrier + one sideband suppressed; 100% efficient; BW = f_m; 6 dB power advantage; generated by balanced modulator + filter</li>
+  <li><b>H3E</b> — SSB with full carrier; pilot carrier aids demodulation</li>
+  <li><b>R3E</b> — SSB reduced carrier</li>
+  <li><b>B8E</b> — Two independent sidebands (ISB)</li>
+  <li><b>C3F</b> — Vestigial sideband (VSB); one full + partial other; used in analog NTSC TV video</li>
+  <li>Overmodulation (m &gt; 1): carrier goes to zero on negative peaks → splatter, harmonic distortion (Frenzel, Ch. 3)</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 3–4.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 3.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 3.</li>
+  <li>Couch, L.W. (2013). <i>Digital and Analog Communication Systems</i>, 8th ed. Pearson. Ch. 5.</li>
+</ul>
 </div></div>
 <div class="q" id="mod-ps2-q1" data-ans="b"><div class="qh"><div class="qn">1</div><div class="qt">Which of the following is not true about AM?</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. The carrier amplitude varies.</li><li class="ok" data-ltr="b">b. The carrier frequency remains constant.</li><li data-ltr="c">c. The carrier frequency changes.</li><li data-ltr="d">d. The information signal amplitude changes the carrier amplitude.</li></ul></div>
 <div class="q" id="mod-ps2-q2" data-ans="b"><div class="qh"><div class="qn">2</div><div class="qt">Modulator circuit performs what mathematical operation on its two inputs?</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Addition</li><li class="ok" data-ltr="b">b. Multiplication</li><li data-ltr="c">c. Division</li><li data-ltr="d">d. Square root</li></ul></div>
@@ -504,24 +566,57 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="mod-ps3" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="mod-ps3"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>MODULATION – PROBLEM SET 3 <span class="bc">30 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Frequency Modulation (FM)</h4>
-<div class="svg-wrap"><svg width="380" height="100" viewBox="0 0 380 100" style="background:#1a237e11;border-radius:6px">
-<text x="10" y="14" font-size="10" fill="#3f51b5" font-family="monospace" font-weight="bold">FM — carrier frequency varies; amplitude constant</text>
-<path d="M10,50 Q16,30 22,50 Q28,70 34,50 Q40,30 46,50 Q52,70 58,50 Q64,30 70,50 Q73,65 76,50 Q79,35 82,50 Q85,65 88,50 Q91,35 94,50 Q97,65 100,50 Q103,35 106,50 Q109,65 112,50 Q116,30 122,50 Q128,70 134,50 Q140,30 146,50 Q152,70 158,50 Q164,30 170,50 Q176,70 182,50 Q188,30 194,50 Q200,70 206,50 Q212,30 218,50 Q224,70 230,50 Q236,30 242,50 Q248,70 254,50 Q260,30 266,50 Q272,70 278,50 Q284,30 290,50 Q296,70 302,50 Q308,30 314,50 Q320,70 326,50 Q332,30 338,50 Q344,70 350,50 Q356,30 362,50 Q368,70 374,50" fill="none" stroke="#42a5f5" stroke-width="2"/>
-<text x="10" y="94" font-size="9" fill="#90a4ae" font-family="monospace">Low freq region → high freq region (more compressed)</text>
-</svg></div>
+<h4>Overview — Frequency Modulation</h4>
+<p>In FM the instantaneous <b>frequency</b> of the carrier varies proportionally to the modulating signal, while amplitude stays constant (Frenzel, Ch. 5). Because noise primarily affects amplitude, FM receivers use <b>limiters</b> to strip amplitude variations, giving FM a decisive noise advantage over AM. FM was invented by Edwin Armstrong (1933) specifically to solve AM’s noise problem. Commercial FM uses ±75 kHz peak deviation, 15 kHz audio bandwidth, and 200 kHz channel spacing.</p>
+<p>v(t) = V_c·sin[2πf_c·t + m_f·sin(2πf_m·t)]. Unlike AM, FM produces <b>infinite sidebands</b> (at f_c ± n·f_m), whose amplitudes follow <b>Bessel functions of the first kind</b>, J_n(m_f) (Tomasi, Ch. 4). Only sidebands above 1% of unmodulated carrier amplitude are practically significant.</p>
 <div class="formula-row">
   <div class="formula-box">m_f = Δf / f_m</div>
-  <div class="formula-box">BW ≈ 2(Δf + f_m) [Carson]</div>
-  <div class="formula-box">DR = Δf_max / f_m(max)</div>
+  <div class="formula-box">Deviation Ratio = Δf_max / f_m(max)</div>
+  <div class="formula-box">BW ≈ 2(Δf + f_m) [Carson’s Rule]</div>
+  <div class="formula-box">BW = 2·n·f_m [Bessel, exact]</div>
+  <div class="formula-box">FM improvement = 3m_f²(m_f+1) over AM</div>
 </div>
+<div class="svg-wrap"><svg width="420" height="145" viewBox="0 0 420 145" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">FM Bessel Sidebands (m_f = 2.5) &amp; FM Stereo Baseband</text>
+<line x1="30" y1="88" x2="390" y2="88" stroke="#546e7a" stroke-width="1"/>
+<line x1="210" y1="88" x2="210" y2="28" stroke="#90caf9" stroke-width="8" stroke-linecap="round"/>
+<text x="210" y="22" text-anchor="middle" font-size="7" fill="#90caf9">f_c (J₀)</text>
+<line x1="168" y1="88" x2="168" y2="45" stroke="#ffd740" stroke-width="6" stroke-linecap="round"/>
+<line x1="252" y1="88" x2="252" y2="45" stroke="#ffd740" stroke-width="6" stroke-linecap="round"/>
+<text x="148" y="40" font-size="7" fill="#ffd740">J₁</text><text x="255" y="40" font-size="7" fill="#ffd740">J₁</text>
+<line x1="126" y1="88" x2="126" y2="60" stroke="#a5d6a7" stroke-width="5" stroke-linecap="round"/>
+<line x1="294" y1="88" x2="294" y2="60" stroke="#a5d6a7" stroke-width="5" stroke-linecap="round"/>
+<text x="106" y="56" font-size="7" fill="#a5d6a7">J₂</text><text x="297" y="56" font-size="7" fill="#a5d6a7">J₂</text>
+<line x1="84" y1="88" x2="84" y2="72" stroke="#ef9a9a" stroke-width="4" stroke-linecap="round"/>
+<line x1="336" y1="88" x2="336" y2="72" stroke="#ef9a9a" stroke-width="4" stroke-linecap="round"/>
+<text x="68" y="68" font-size="7" fill="#ef9a9a">J₃</text><text x="339" y="68" font-size="7" fill="#ef9a9a">J₃</text>
+<text x="210" y="100" text-anchor="middle" font-size="7" fill="#78909c">Carson BW = 2(2.5+1)·f_m = 7f_m</text>
+<line x1="30" y1="128" x2="390" y2="128" stroke="#546e7a" stroke-width="1"/>
+<text x="10" y="125" font-size="7" fill="#78909c">Stereo baseband:</text>
+<rect x="55" y="115" width="60" height="18" rx="2" fill="#1a237e88" stroke="#90caf9" stroke-width="1"/>
+<text x="85" y="127" text-anchor="middle" font-size="7" fill="#90caf9">L+R 50Hz–15kHz</text>
+<line x1="155" y1="128" x2="155" y2="110" stroke="#ffd740" stroke-width="3"/>
+<text x="155" y="108" text-anchor="middle" font-size="7" fill="#ffd740">19kHz pilot</text>
+<rect x="170" y="115" width="95" height="18" rx="2" fill="#1b3a0088" stroke="#a5d6a7" stroke-width="1"/>
+<text x="217" y="127" text-anchor="middle" font-size="7" fill="#a5d6a7">L−R DSB-SC 23–53kHz</text>
+<rect x="300" y="118" width="60" height="13" rx="2" fill="#4a1f0088" stroke="#ffd740" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="330" y="128" text-anchor="middle" font-size="7" fill="#ffd740">SCA 67kHz</text>
+<text x="10" y="143" font-size="7" fill="#546e7a">Pre-emphasis/de-emphasis: τ=75 μs (US); reduces high-freq noise ≈13 dB above 2 kHz</text>
+</svg></div>
+<h4>FM Capture &amp; Quieting Effects</h4>
 <ul>
-  <li>Commercial FM: Δf_max = ±75 kHz; BW = 200 kHz; 88–108 MHz band</li>
-  <li><b>Pre-emphasis</b> 75 μs: boost high-freq audio before TX; de-emphasis at RX</li>
-  <li><b>Capture effect</b>: stronger FM signal suppresses weaker one on same freq</li>
-  <li>FM stereo pilot tone = 19 kHz; L−R subcarrier = 38 kHz DSB-SC</li>
-  <li>SCA = 67 kHz subcarrier (background music services)</li>
-  <li>Emission designation: F3E = FM telephony</li>
+  <li><b>Capture effect</b>: FM receiver locks to stronger signal, suppressing weaker co-channel; &gt;2:1 power ratio sufficient</li>
+  <li><b>Quieting</b>: FM receiver noise drops sharply as signal exceeds threshold; unlike AM which degrades gradually</li>
+  <li><b>Pre-emphasis</b>: RC high-pass boosts high-freq audio pre-transmission (τ = 75 μs USA, 50 μs Europe)</li>
+  <li><b>De-emphasis</b>: complementary RC low-pass at receiver restores flat response and attenuates high-freq noise</li>
+  <li>FM station classes (FCC): Class A (6 kW ERP), Class B (50 kW), Class C (100 kW)</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 5–6.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 4.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 4.</li>
+  <li>Haykin, S. (2001). <i>Communication Systems</i>, 4th ed. Wiley. Ch. 4.</li>
 </ul>
 </div></div>
 <div class="q" id="mod-ps3-q1" data-ans="d" data-sol="Image=f_RF+2×f_IF=98.7+2(10.7)=120.1 MHz"><div class="qh"><div class="qn">1</div><div class="qt">An FM receiver with an I-F of 10.7 MHz is tuned to 98.7 MHz. What is the numerical value of the image frequency?</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. 77.3 MHz</li><li data-ltr="b">b. 88.0 MHz</li><li data-ltr="c">c. 109.4 MHz</li><li class="ok" data-ltr="d">d. 120.1 MHz</li></ul><div class="sol"><b>Solution</b>Image=f_RF+2×f_IF=98.7+2(10.7)=<b>120.1 MHz</b></div></div>
@@ -557,31 +652,71 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="dat-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="dat-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>DATACOM &amp; DIGITAL TELEPHONY – PROBLEM SET 1 <span class="bc">50 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Digital Communications Fundamentals</h4>
-<div class="svg-wrap"><svg width="380" height="80" viewBox="0 0 380 80" style="background:#0d1117;border-radius:6px">
-<text x="10" y="14" font-size="10" fill="#90caf9" font-family="monospace" font-weight="bold">PCM Block Diagram</text>
-<rect x="10" y="28" width="60" height="28" rx="4" fill="#1a237e" stroke="#90caf9" stroke-width="1"/><text x="40" y="46" text-anchor="middle" font-size="9" fill="#fff" font-family="monospace">Sampler</text>
-<line x1="70" y1="42" x2="90" y2="42" stroke="#90caf9" stroke-width="1.5" marker-end="url(#arr)"/>
-<rect x="90" y="28" width="60" height="28" rx="4" fill="#1b3a00" stroke="#a5d6a7" stroke-width="1"/><text x="120" y="46" text-anchor="middle" font-size="9" fill="#fff" font-family="monospace">Quantizer</text>
-<line x1="150" y1="42" x2="170" y2="42" stroke="#90caf9" stroke-width="1.5"/>
-<rect x="170" y="28" width="60" height="28" rx="4" fill="#4a1f00" stroke="#ffd740" stroke-width="1"/><text x="200" y="46" text-anchor="middle" font-size="9" fill="#fff" font-family="monospace">Encoder</text>
-<line x1="230" y1="42" x2="250" y2="42" stroke="#90caf9" stroke-width="1.5"/>
-<rect x="250" y="28" width="80" height="28" rx="4" fill="#1a1f4e" stroke="#ce93d8" stroke-width="1"/><text x="290" y="46" text-anchor="middle" font-size="9" fill="#fff" font-family="monospace">PCM Output</text>
-<text x="10" y="74" font-size="9" fill="#90a4ae" font-family="monospace">f_s ≥ 2·f_max (Nyquist)  Bits/sample=log₂(L)  SNR≈6.02n+1.76 dB</text>
-</svg></div>
+<h4>Overview — Digital Communications Fundamentals</h4>
+<p>The transition to digital communications rests on three theorems: the <b>Sampling Theorem</b> (Nyquist, 1928), the <b>Nyquist Channel Capacity</b> (1924), and <b>Shannon’s Information-Theoretic Limit</b> (1948). Digital signals offer superior noise immunity (errors can be corrected), privacy (encryption), and compatibility with computers (Frenzel, Ch. 11).</p>
+<p>The Nyquist-Shannon Sampling Theorem states that a bandlimited signal with maximum frequency f_max can be perfectly reconstructed from samples taken at f_s ≥ 2·f_max (Tomasi, Ch. 10). For voice telephony, f_max = 4 kHz → f_s = 8000 samples/sec (ITU-T G.711). Each sample is quantized to L = 2^n levels and encoded into n bits.</p>
 <div class="formula-row">
-  <div class="formula-box">f_s ≥ 2·f_max (Nyquist)</div>
-  <div class="formula-box">C = B·log₂(M) bps</div>
-  <div class="formula-box">C_max = B·log₂(1+S/N) [Shannon]</div>
+  <div class="formula-box">f_s ≥ 2·f_max [Nyquist]</div>
+  <div class="formula-box">n = log₂(L) bits/sample</div>
+  <div class="formula-box">R_b = f_s × n bps</div>
+  <div class="formula-box">SNR_q ≈ 6.02n + 1.76 dB</div>
+  <div class="formula-box">DS0 = 64 kbps (8 kHz × 8 bits)</div>
+  <div class="formula-box">Nyquist capacity: C = 2B·log₂(M)</div>
+  <div class="formula-box">Shannon: C = B·log₂(1 + S/N)</div>
 </div>
+<div class="svg-wrap"><svg width="420" height="145" viewBox="0 0 420 145" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">PCM Encoding &amp; Digital Modulation Constellations</text>
+<path d="M10,75 Q40,35 70,75 Q100,115 130,75 Q160,35 190,75 Q220,115 250,75 Q280,35 310,75 Q340,115 370,75" fill="none" stroke="#90caf9" stroke-width="1.8"/>
+<line x1="10" y1="35" x2="280" y2="35" stroke="#2a2a3e" stroke-width="0.8" stroke-dasharray="3,3"/>
+<line x1="10" y1="55" x2="280" y2="55" stroke="#2a2a3e" stroke-width="0.8" stroke-dasharray="3,3"/>
+<line x1="10" y1="75" x2="280" y2="75" stroke="#2a2a3e" stroke-width="0.8" stroke-dasharray="3,3"/>
+<line x1="10" y1="95" x2="280" y2="95" stroke="#2a2a3e" stroke-width="0.8" stroke-dasharray="3,3"/>
+<line x1="10" y1="115" x2="280" y2="115" stroke="#2a2a3e" stroke-width="0.8" stroke-dasharray="3,3"/>
+<rect x="67" y="75" width="4" height="40" fill="#a5d6a7" opacity=".8"/>
+<rect x="127" y="75" width="4" height="40" fill="#a5d6a7" opacity=".8"/>
+<rect x="187" y="75" width="4" height="40" fill="#a5d6a7" opacity=".8"/>
+<rect x="247" y="95" width="4" height="20" fill="#a5d6a7" opacity=".8"/>
+<text x="10" y="32" font-size="6" fill="#ffd740">Lvl7</text><text x="10" y="52" font-size="6" fill="#ffd740">Lvl6</text>
+<text x="10" y="72" font-size="6" fill="#ffd740">Lvl5</text><text x="10" y="92" font-size="6" fill="#ffd740">Lvl4</text>
+<text x="10" y="112" font-size="6" fill="#ffd740">Lvl3</text>
+<text x="25" y="132" font-size="7" fill="#78909c">SNR improves 6 dB per additional bit (each bit doubles quantisation levels)</text>
+<text x="300" y="30" font-size="8" fill="#90a4ae">BPSK (1b)</text>
+<circle cx="310" cy="55" r="5" fill="#4caf50"/><circle cx="340" cy="55" r="5" fill="#4caf50"/>
+<line x1="298" y1="55" x2="355" y2="55" stroke="#333" stroke-width="1"/>
+<line x1="325" y1="40" x2="325" y2="70" stroke="#333" stroke-width="1"/>
+<text x="300" y="88" font-size="8" fill="#90a4ae">QPSK (2b)</text>
+<circle cx="305" cy="100" r="4" fill="#ffd740"/><circle cx="325" cy="100" r="4" fill="#ffd740"/>
+<circle cx="305" cy="118" r="4" fill="#ffd740"/><circle cx="325" cy="118" r="4" fill="#ffd740"/>
+<line x1="295" y1="109" x2="335" y2="109" stroke="#333" stroke-width="1"/>
+<line x1="315" y1="90" x2="315" y2="128" stroke="#333" stroke-width="1"/>
+<text x="345" y="88" font-size="8" fill="#90a4ae">16-QAM (4b)</text>
+<line x1="350" y1="109" x2="415" y2="109" stroke="#333" stroke-width="1"/>
+<line x1="383" y1="88" x2="383" y2="132" stroke="#333" stroke-width="1"/>
+<rect x="354" y="91" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="368" y="91" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="382" y="91" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="396" y="91" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="354" y="103" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="368" y="103" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="382" y="103" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="396" y="103" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="354" y="115" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="368" y="115" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="382" y="115" width="6" height="6" rx="1" fill="#ef9a9a"/>
+<rect x="396" y="115" width="6" height="6" rx="1" fill="#ef9a9a"/>
+</svg></div>
+<h4>Digital Hierarchy (PDH/SDH)</h4>
 <ul>
-  <li><b>PCM bits/sample</b>: n = log₂(L) where L = quantization levels</li>
-  <li><b>Quantizing noise SNR</b>: ≈ 6.02n + 1.76 dB</li>
-  <li><b>Delta modulation</b>: 1 bit/sample; slope overload when signal changes too fast</li>
-  <li><b>BPSK</b>: 1 b/symbol; QPSK: 2 b/symbol; 8-PSK: 3; 16-QAM: 4; 64-QAM: 6</li>
-  <li><b>Baud</b> = symbols/sec; bps = baud × bits/symbol</li>
-  <li>ASCII: 7 bits (128 chars); EBCDIC: 8 bits; Baudot: 5 bits</li>
-  <li>Hamming distance: min # of bit errors to convert one codeword to another</li>
+  <li>DS0 = 64 kbps; DS1 (T1) = 24×DS0 + framing = 1.544 Mbps; DS3 = 28×T1 = 44.736 Mbps</li>
+  <li>E1 = 32×DS0 = 2.048 Mbps; E3 = 16×E1 = 34.368 Mbps</li>
+  <li>SDH/SONET: STM-1/OC-3 = 155.52 Mbps; STM-4/OC-12 = 622 Mbps; STM-16/OC-48 = 2.5 Gbps; STM-64/OC-192 = 10 Gbps</li>
+  <li>Shannon example: 3 kHz voice at 30 dB SNR → C = 3000·log₂(1001) ≈ 30 kbps theoretical max</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 11–12.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 10–11.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 10.</li>
 </ul>
 </div></div>
 <div class="q" id="dat-ps1-q1" data-ans="b"><div class="qh"><div class="qn">1</div><div class="qt">Redundancy means the ____</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Transmission rate of the system</li><li class="ok" data-ltr="b">b. Symbols are to be repeated</li><li data-ltr="c">c. Time between failures</li><li data-ltr="d">d. Time between successes</li></ul></div>
@@ -637,36 +772,53 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="dat-ps2" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="dat-ps2"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>DATACOM &amp; DIGITAL TELEPHONY – PROBLEM SET 2 <span class="bc">50 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Advanced Datacom &amp; Protocols</h4>
-<div class="svg-wrap"><svg width="340" height="188" viewBox="0 0 340 188" style="background:#0d1117;border-radius:6px">
-<text x="10" y="14" font-size="10" fill="#90caf9" font-family="monospace" font-weight="bold">OSI Model — 7 Layers</text>
-<rect x="10" y="20" width="150" height="24" rx="4" fill="#1a237e"/><text x="85" y="36" text-anchor="middle" font-size="11" fill="#90caf9" font-family="sans-serif">7. Application</text>
-<rect x="10" y="46" width="150" height="24" rx="4" fill="#283593"/><text x="85" y="62" text-anchor="middle" font-size="11" fill="#90caf9" font-family="sans-serif">6. Presentation</text>
-<rect x="10" y="72" width="150" height="24" rx="4" fill="#303f9f"/><text x="85" y="88" text-anchor="middle" font-size="11" fill="#90caf9" font-family="sans-serif">5. Session</text>
-<rect x="10" y="98" width="150" height="24" rx="4" fill="#3949ab"/><text x="85" y="114" text-anchor="middle" font-size="11" fill="#fff" font-family="sans-serif">4. Transport</text>
-<rect x="10" y="124" width="150" height="24" rx="4" fill="#3f51b5"/><text x="85" y="140" text-anchor="middle" font-size="11" fill="#fff" font-family="sans-serif">3. Network</text>
-<rect x="10" y="150" width="150" height="24" rx="4" fill="#5c6bc0"/><text x="85" y="166" text-anchor="middle" font-size="11" fill="#fff" font-family="sans-serif">2. Data Link</text>
-<rect x="10" y="176" width="150" height="24" rx="4" fill="#7986cb"/><text x="85" y="192" text-anchor="middle" font-size="11" fill="#fff" font-family="sans-serif" transform="translate(0,-5)">1. Physical</text>
-<text x="175" y="36" font-size="9" fill="#78909c" font-family="monospace">HTTP, FTP, DNS, SMTP</text>
-<text x="175" y="62" font-size="9" fill="#78909c" font-family="monospace">SSL/TLS, JPEG, ASCII</text>
-<text x="175" y="88" font-size="9" fill="#78909c" font-family="monospace">NetBIOS, RPC</text>
-<text x="175" y="114" font-size="9" fill="#78909c" font-family="monospace">TCP, UDP, port #</text>
-<text x="175" y="140" font-size="9" fill="#78909c" font-family="monospace">IP, ICMP, routing</text>
-<text x="175" y="166" font-size="9" fill="#78909c" font-family="monospace">Ethernet, HDLC, MAC</text>
-<text x="175" y="188" font-size="9" fill="#78909c" font-family="monospace" transform="translate(0,-4)">Bits, cable, NIC</text>
+<h4>Overview — Data Protocols &amp; OSI Model</h4>
+<p>The ISO OSI (Open Systems Interconnection) reference model, introduced in 1984, divides communication into 7 layers, each providing services to the layer above (Tomasi, Ch. 12). Virtually all modern protocols — Ethernet, TCP/IP, VoIP — are designed within this framework. Understanding OSI is the key to troubleshooting any networked system.</p>
+<div class="svg-wrap"><svg width="420" height="196" viewBox="0 0 420 196" style="background:#1a1f3e;border-radius:8px;font-family:sans-serif">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold" font-family="monospace">OSI Reference Model</text>
+<rect x="8" y="18" width="150" height="24" rx="3" fill="#1a237e"/><text x="83" y="34" text-anchor="middle" font-size="10" fill="#90caf9">7. Application</text>
+<rect x="8" y="44" width="150" height="24" rx="3" fill="#283593"/><text x="83" y="60" text-anchor="middle" font-size="10" fill="#90caf9">6. Presentation</text>
+<rect x="8" y="70" width="150" height="24" rx="3" fill="#303f9f"/><text x="83" y="86" text-anchor="middle" font-size="10" fill="#90caf9">5. Session</text>
+<rect x="8" y="96" width="150" height="24" rx="3" fill="#3949ab"/><text x="83" y="112" text-anchor="middle" font-size="10" fill="#fff">4. Transport</text>
+<rect x="8" y="122" width="150" height="24" rx="3" fill="#3f51b5"/><text x="83" y="138" text-anchor="middle" font-size="10" fill="#fff">3. Network</text>
+<rect x="8" y="148" width="150" height="24" rx="3" fill="#5c6bc0"/><text x="83" y="164" text-anchor="middle" font-size="10" fill="#fff">2. Data Link</text>
+<rect x="8" y="174" width="150" height="24" rx="3" fill="#7986cb"/><text x="83" y="190" text-anchor="middle" font-size="10" fill="#fff">1. Physical</text>
+<text x="165" y="34" font-size="8" fill="#cfd8dc" font-family="monospace">HTTP, FTP, SMTP, DNS, Telnet</text>
+<text x="165" y="60" font-size="8" fill="#cfd8dc" font-family="monospace">SSL/TLS, JPEG, MPEG, ASCII</text>
+<text x="165" y="86" font-size="8" fill="#cfd8dc" font-family="monospace">NetBIOS, RPC, SQL</text>
+<text x="165" y="112" font-size="8" fill="#cfd8dc" font-family="monospace">TCP (reliable), UDP (fast)</text>
+<text x="165" y="138" font-size="8" fill="#cfd8dc" font-family="monospace">IP, ICMP, routing protocols</text>
+<text x="165" y="164" font-size="8" fill="#cfd8dc" font-family="monospace">Ethernet, Wi-Fi, PPP, HDLC</text>
+<text x="165" y="190" font-size="8" fill="#cfd8dc" font-family="monospace">Cables, bits, NIC, voltages</text>
 </svg></div>
+<h4>Multiplexing</h4>
+<p>Multiplexing lets multiple signals share one medium, maximizing channel utilization — one of the most economically important concepts in telecoms (Frenzel, Ch. 13).</p>
+<ul>
+  <li><b>FDM</b>: each signal gets a unique sub-band; guard bands prevent overlap; used in analog telephony, cable TV, FM broadcasting</li>
+  <li><b>TDM</b>: each signal gets time slots; digital; T1 = 24×DS0 = 1.544 Mbps; E1 = 30+2 channels = 2.048 Mbps</li>
+  <li><b>WDM/DWDM</b>: wavelength division on optical fiber; DWDM 0.4 nm spacing; 80+ channels per fiber</li>
+  <li><b>CDMA</b>: unique spreading codes separate users sharing the same freq/time; used in 3G and GPS</li>
+  <li><b>OFDM</b>: overlapping orthogonal subcarriers; robust against multipath; 4G LTE, 5G NR, Wi-Fi, DSL</li>
+</ul>
+<h4>ISDN &amp; Error Control</h4>
 <div class="formula-row">
-  <div class="formula-box">Efficiency = (Data bits) / (Total bits incl. overhead)</div>
-  <div class="formula-box">T₁ = 1.544 Mbps (24 DS0 × 64 kbps + framing)</div>
+  <div class="formula-box">BRI = 2B+D = 2×64k+16k = 144 kbps</div>
+  <div class="formula-box">PRI (T1) = 23B+D = 1.544 Mbps</div>
+  <div class="formula-box">PRI (E1) = 30B+2D = 2.048 Mbps</div>
 </div>
 <ul>
-  <li><b>OSI layers</b>: Physical(1)→Data Link(2)→Network(3)→Transport(4)→Session(5)→Presentation(6)→Application(7)</li>
-  <li><b>ISDN BRI</b>: 2B+D (2×64+16 = 144 kbps); PRI: 23B+D (T1) or 30B+D (E1)</li>
-  <li><b>CSMA/CD</b>: Ethernet access method; collision detection; jam signal</li>
-  <li><b>X.25</b>: packet-switched; Layer 3 = PLP; Layer 2 = LAPB</li>
-  <li><b>FDM</b>: freq multiplexing; <b>TDM</b>: time multiplexing; <b>CDM</b>: code division</li>
-  <li><b>CRC</b>: cyclic redundancy check; uses generator polynomial</li>
-  <li>SS7 (Common Channel Signaling System 7): out-of-band signaling for PSTN</li>
+  <li><b>Parity</b>: single bit; detects single-bit errors only</li>
+  <li><b>Hamming code</b>: detects and corrects single-bit errors; minimum distance = 3; r = log₂(n+r+1)</li>
+  <li><b>CRC</b>: polynomial division; detects burst errors up to generator degree length; used in Ethernet, serial links</li>
+  <li><b>Reed-Solomon</b>: powerful block code; corrects both erasures and errors; CDs, DVDs, QR codes, deep-space</li>
+  <li>Baudot: 5 bits (teletype); ASCII: 7 bits; EBCDIC: 8 bits; Unicode: 16–32 bits</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 13–15.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 12–14.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 12–14.</li>
+  <li>Stallings, W. (2017). <i>Data and Computer Communications</i>, 10th ed. Pearson.</li>
 </ul>
 </div></div>
 <div class="q" id="dat-ps2-q1" data-ans="c"><div class="qh"><div class="qn">1</div><div class="qt">____ is a standard developed by ISO to allow interconnection of systems from different manufacturers.</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. TCP/IP</li><li data-ltr="b">b. SNA</li><li class="ok" data-ltr="c">c. OSI</li><li data-ltr="d">d. NetBEUI</li></ul></div>
@@ -722,33 +874,52 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="tl-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="tl-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>TRANSMISSION LINES – PROBLEM SET 1 <span class="bc">35 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Transmission Line Fundamentals</h4>
-<div class="svg-wrap"><svg width="360" height="100" viewBox="0 0 360 100" style="background:#0d1117;border-radius:6px">
-<text x="10" y="14" font-size="10" fill="#90caf9" font-family="monospace" font-weight="bold">Distributed TL Model (per unit length)</text>
-<line x1="10" y1="35" x2="350" y2="35" stroke="#4fc3f7" stroke-width="2"/>
-<line x1="10" y1="75" x2="350" y2="75" stroke="#4fc3f7" stroke-width="2"/>
-<rect x="60" y="27" width="30" height="16" rx="3" fill="#1a237e" stroke="#90caf9" stroke-width="1.2"/>
-<text x="75" y="39" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace">R</text>
-<rect x="150" y="27" width="30" height="16" rx="3" fill="#1b5e20" stroke="#a5d6a7" stroke-width="1.2"/>
-<text x="165" y="39" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace">L</text>
-<line x1="240" y1="35" x2="240" y2="75"/><rect x="225" y="45" width="30" height="20" rx="3" fill="#4a1f00" stroke="#ffd740" stroke-width="1.2"/>
-<text x="240" y="59" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace">C</text>
-<line x1="300" y1="35" x2="300" y2="75"/><rect x="285" y="45" width="30" height="20" rx="3" fill="#1a1f4e" stroke="#ce93d8" stroke-width="1.2"/>
-<text x="300" y="59" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace">G</text>
-<text x="10" y="95" font-size="9" fill="#90a4ae" font-family="monospace">Z₀=√(R+jωL)/(G+jωC)  Lossless: Z₀=√(L/C)  α=R/2·√(C/L)  β=ω√(LC)</text>
+<h4>Overview — Transmission Line Theory</h4>
+<p>At RF frequencies, wires must be modeled as <b>distributed-parameter networks</b> — resistance R, inductance L, capacitance C, and conductance G distributed continuously along the line (Tomasi, Ch. 17). Ignoring this at high frequencies causes serious mismatches, reflections, and power loss. The hallmark of TL behavior is that circuit dimensions are no longer negligible compared to wavelength.</p>
+<div class="svg-wrap"><svg width="420" height="105" viewBox="0 0 420 105" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Distributed RLCG Model (per unit length)</text>
+<line x1="10" y1="40" x2="60" y2="40" stroke="#4fc3f7" stroke-width="2.5"/>
+<rect x="60" y="32" width="40" height="16" rx="3" fill="#1a237e" stroke="#90caf9" stroke-width="1.5"/>
+<text x="80" y="43" text-anchor="middle" font-size="9" fill="#fff">R</text>
+<line x1="100" y1="40" x2="150" y2="40" stroke="#4fc3f7" stroke-width="2.5"/>
+<path d="M150,40 Q158,30 165,40 Q173,50 180,40 Q188,30 195,40 Q203,50 210,40" fill="none" stroke="#a5d6a7" stroke-width="2"/>
+<text x="180" y="28" text-anchor="middle" font-size="9" fill="#a5d6a7">L</text>
+<line x1="210" y1="40" x2="260" y2="40" stroke="#4fc3f7" stroke-width="2.5"/>
+<line x1="260" y1="40" x2="260" y2="58"/><line x1="248" y1="58" x2="272" y2="58" stroke="#ffd740" stroke-width="3"/><line x1="248" y1="63" x2="272" y2="63" stroke="#ffd740" stroke-width="3"/><line x1="260" y1="63" x2="260" y2="85"/>
+<text x="278" y="63" font-size="9" fill="#ffd740">C</text>
+<line x1="320" y1="40" x2="320" y2="52"/><rect x="308" y="52" width="24" height="28" rx="3" fill="#4a1f00" stroke="#ef9a9a" stroke-width="1.5"/><text x="320" y="70" text-anchor="middle" font-size="9" fill="#fff">G</text><line x1="320" y1="80" x2="320" y2="85"/>
+<line x1="10" y1="85" x2="420" y2="85" stroke="#4fc3f7" stroke-width="2.5"/>
+<line x1="260" y1="40" x2="320" y2="40"/><line x1="320" y1="40" x2="420" y2="40"/>
+<text x="10" y="100" font-size="7" fill="#546e7a">R=series resistance(ohm/m) L=series inductance(H/m) C=shunt capacitance(F/m) G=shunt conductance(S/m)</text>
 </svg></div>
 <div class="formula-row">
   <div class="formula-box">Z₀ = √((R+jωL)/(G+jωC))</div>
-  <div class="formula-box">Lossless Z₀ = √(L/C)</div>
-  <div class="formula-box">v_p = 1/√(LC) = c/√(ε_r)</div>
+  <div class="formula-box">Lossless: Z₀ = √(L/C)</div>
+  <div class="formula-box">v_p = 1/√(LC) = c/√(ε_rμ_r)</div>
+  <div class="formula-box">VF = v_p/c = 1/√(ε_r)</div>
+  <div class="formula-box">Coax: Z₀ = (138/√ε_r)·log(D/d)</div>
 </div>
+<h4>Common Line Types</h4>
 <ul>
-  <li>Coax Z₀ = (138/√ε_r)·log(D/d) Ω</li>
-  <li>Parallel wire Z₀ = (276/√ε_r)·log(2S/d) Ω</li>
-  <li>Propagation constant γ = α + jβ; α = attenuation (Np/m); β = 2π/λ</li>
-  <li>Velocity factor VF = v_p/c = 1/√ε_r (coax: ~0.66–0.85)</li>
-  <li>Matched line (Z_L = Z₀): no reflection; SWR = 1</li>
-  <li>Short-circuit stub: less than λ/4 → inductive; Open stub &lt;λ/4 → capacitive</li>
+  <li><b>Coaxial</b>: Z₀ = 50 Ω (RF) or 75 Ω (video); shielded; no radiation; VF ≈ 0.66</li>
+  <li><b>Open (parallel) wire</b>: Z₀ = (276/√ε_r)·log(2S/d); used as antenna feeders; balanced</li>
+  <li><b>Twisted pair (UTP/STP)</b>: Z₀ ≈ 100–120 Ω; balanced; Ethernet, telephone</li>
+  <li><b>Microstrip</b>: PCB printed line; Z₀ depends on w/h and ε_r; used in MMICs and RF boards</li>
+  <li><b>Rectangular waveguide</b>: hollow pipe; dominant mode TE₁₀; f_c = c/(2a); no DC path</li>
+</ul>
+<h4>Reflection &amp; SWR</h4>
+<div class="formula-row">
+  <div class="formula-box">Γ = (Z_L − Z₀)/(Z_L + Z₀)</div>
+  <div class="formula-box">SWR = (1+|Γ|)/(1−|Γ|)</div>
+  <div class="formula-box">Return Loss = −20·log|Γ| dB</div>
+</div>
+<p>When Z_L = Z₀, Γ = 0 and SWR = 1 (perfect match). Any deviation produces a standing wave along the line with voltage maxima and minima spaced λ/4 apart (Blake, Ch. 12).</p>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 17.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 17.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 12.</li>
+  <li>Pozar, D.M. (2011). <i>Microwave Engineering</i>, 4th ed. Wiley. Ch. 2.</li>
 </ul>
 </div></div>
 <div class="q" id="tl-ps1-q1" data-ans="c"><div class="qh"><div class="qn">1</div><div class="qt">A system of conductors used to convey electric power or signal between two or more points</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Channels</li><li data-ltr="b">b. Optical cables</li><li class="ok" data-ltr="c">c. Transmission lines</li><li data-ltr="d">d. Waveguides</li></ul></div>
@@ -789,20 +960,42 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="tl-ps2" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="tl-ps2"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>TRANSMISSION LINES – PROBLEM SET 2 <span class="bc">35 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Transmission Lines — Reflections &amp; SWR</h4>
+<h4>Overview — Standing Waves, Matching &amp; Smith Chart</h4>
+<p>A mismatch between line and load creates forward + reflected wave superposition — a <b>standing wave pattern</b>. High SWR means large reflections, increased line losses, potential arcing, and transmitter stress (Frenzel, Ch. 17). Impedance matching eliminates reflections and maximizes power transfer.</p>
+<div class="svg-wrap"><svg width="420" height="95" viewBox="0 0 420 95" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Standing Wave Pattern on Mismatched Line (SWR = 3)</text>
+<line x1="10" y1="55" x2="410" y2="55" stroke="#2a2a3e" stroke-width="1"/>
+<line x1="10" y1="25" x2="410" y2="25" stroke="#2a2a3e" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="10" y1="85" x2="410" y2="85" stroke="#2a2a3e" stroke-width="1" stroke-dasharray="3,3"/>
+<path d="M10,55 Q52,10 95,55 Q137,100 180,55 Q222,10 265,55 Q307,100 350,55 Q380,32 410,55" fill="none" stroke="#90caf9" stroke-width="2.5"/>
+<text x="95" y="8" text-anchor="middle" font-size="7" fill="#ffd740">V_max (antinode)</text>
+<text x="180" y="93" text-anchor="middle" font-size="7" fill="#ef9a9a">V_min (node)</text>
+<text x="12" y="22" font-size="7" fill="#ffd740">V_max</text>
+<text x="12" y="90" font-size="7" fill="#ef9a9a">V_min</text>
+<line x1="410" y1="18" x2="410" y2="92" stroke="#4caf50" stroke-width="3"/>
+<text x="350" y="15" font-size="7" fill="#78909c">SWR = V_max/V_min</text>
+<text x="350" y="25" font-size="7" fill="#a5d6a7">Nodes: λ/4 apart</text>
+</svg></div>
 <div class="formula-row">
-  <div class="formula-box">Γ = (Z_L−Z₀)/(Z_L+Z₀)</div>
-  <div class="formula-box">SWR = (1+|Γ|)/(1−|Γ|)</div>
-  <div class="formula-box">Return Loss = −20·log|Γ| dB</div>
+  <div class="formula-box">λ/4 transformer: Z_T = √(Z₁·Z₂)</div>
+  <div class="formula-box">Mismatch Loss = −10·log(1−|Γ|²) dB</div>
+  <div class="formula-box">Skin depth: δ = √(2/ωμσ)</div>
 </div>
+<h4>Impedance Matching Techniques</h4>
 <ul>
-  <li>SWR = Z_L/Z₀ (when Z_L &gt; Z₀) or Z₀/Z_L (when Z₀ &gt; Z_L)</li>
-  <li>Quarter-wave transformer Z_T = √(Z₁·Z₂) — impedance matching</li>
-  <li>Balun: converts balanced↔unbalanced lines; λ/2 sleeve or toroidal</li>
-  <li>Skin effect: current flows on surface; depth δ = √(2/ωμσ)</li>
-  <li>Short circuit at λ/4 from load: presents open circuit at load point</li>
-  <li>Resonant stub: λ/4 SC stub = parallel resonant; λ/4 OC stub = series resonant</li>
-  <li>Smith Chart: normalized impedance/admittance; circles of const R, const X</li>
+  <li><b>Quarter-wave transformer</b>: insert λ/4 section with Z_T = √(Z₁·Z₂); narrowband; used between sections of different impedance (Tomasi, Ch. 17)</li>
+  <li><b>Stub matching</b>: short- or open-circuit stub at calculated distance from load; susceptance cancels load susceptance; single or double stub</li>
+  <li><b>L/π/T-networks</b>: lumped LC matching; used at lower frequencies where stubs are impractically long</li>
+  <li><b>Balun</b>: BALanced-UNbalanced transformer; required to feed dipole antennas from coax (Blake, Ch. 12)</li>
+</ul>
+<h4>Skin Effect &amp; Smith Chart</h4>
+<p>At high frequencies, current concentrates within skin depth δ of the conductor surface. For copper at 1 GHz: δ ≈ 2.1 μm. Conductor loss increases as √f. The <b>Smith Chart</b> (invented by Phillip Smith, Bell Labs, 1939) is a graphical tool plotting the complex reflection coefficient Γ on a polar plane with constant-resistance circles and constant-reactance arcs overlaid. Moving along a TL corresponds to rotating around the chart center. It eliminates complex arithmetic for impedance-matching problems (Pozar, Ch. 2).</p>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 17.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 17.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 12.</li>
+  <li>Pozar, D.M. (2011). <i>Microwave Engineering</i>, 4th ed. Wiley. Ch. 2–5.</li>
 </ul>
 </div></div>
 <div class="q" id="tl-ps2-q1" data-ans="a"><div class="qh"><div class="qn">1</div><div class="qt">If the distance of separation between centers of two parallel wires is increased, the characteristic impedance will</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li class="ok" data-ltr="a">a. Increased</li><li data-ltr="b">b. Decreased</li><li data-ltr="c">c. Be the same</li><li data-ltr="d">d. Doubled</li></ul></div>
@@ -843,21 +1036,52 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="rp-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="rp-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>RADIOWAVE PROPAGATION &amp; ANTENNA – PROBLEM SET 1 <span class="bc">20 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Radiowave Propagation</h4>
+<h4>Overview — Radiowave Propagation</h4>
+<p>Radiowaves propagate via three mechanisms whose dominance depends on frequency: <b>ground (surface) waves</b>, <b>sky waves</b>, and <b>space (LOS) waves</b> (Frenzel, Ch. 18; Tomasi, Ch. 19). Selecting the right band for a service requires understanding which mechanism prevails and what range, reliability, and antenna requirements result.</p>
+<div class="svg-wrap"><svg width="420" height="155" viewBox="0 0 420 155" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Radiowave Propagation Mechanisms</text>
+<ellipse cx="210" cy="195" rx="250" ry="80" fill="#1b3a00" stroke="#4caf50" stroke-width="1.5"/>
+<text x="210" y="150" text-anchor="middle" font-size="8" fill="#a5d6a7">Earth Surface</text>
+<path d="M10,88 Q210,58 410,88" fill="none" stroke="#90caf9" stroke-width="1.5" stroke-dasharray="5,3" opacity=".7"/>
+<text x="378" y="85" font-size="7" fill="#90caf9">F layer (300km)</text>
+<path d="M30,103 Q210,78 390,103" fill="none" stroke="#7986cb" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/>
+<text x="338" y="100" font-size="7" fill="#7986cb">E layer (100km)</text>
+<path d="M50,116 Q210,100 370,116" fill="none" stroke="#546e7a" stroke-width="1" stroke-dasharray="3,3" opacity=".4"/>
+<text x="338" y="114" font-size="7" fill="#546e7a">D layer (70km)</text>
+<polygon points="60,138 64,126 56,126" fill="#ffd740"/>
+<text x="60" y="147" text-anchor="middle" font-size="7" fill="#ffd740">TX</text>
+<path d="M64,132 Q130,128 180,130" fill="none" stroke="#a5d6a7" stroke-width="2"/>
+<text x="122" y="122" font-size="7" fill="#a5d6a7">Ground wave (&lt;2MHz)</text>
+<path d="M66,128 Q120,68 200,73 Q250,68 310,133" fill="none" stroke="#ffd740" stroke-width="2"/>
+<text x="200" y="62" font-size="7" fill="#ffd740">Sky wave (2–30MHz)</text>
+<line x1="66" y1="128" x2="300" y2="131" stroke="#ef9a9a" stroke-width="1.5" stroke-dasharray="4,2"/>
+<text x="220" y="141" font-size="7" fill="#ef9a9a">Space wave (VHF+)</text>
+<polygon points="310,138 314,126 306,126" fill="#ef9a9a"/>
+<text x="310" y="147" text-anchor="middle" font-size="7" fill="#ef9a9a">RX</text>
+</svg></div>
 <div class="formula-row">
-  <div class="formula-box">E = E₀/d (inverse distance)</div>
-  <div class="formula-box">P ∝ 1/d² (inverse square)</div>
-  <div class="formula-box">λ = c/f &nbsp; c = 3×10⁸ m/s</div>
+  <div class="formula-box">f_c = 9·√N_max [critical freq, Hz]</div>
+  <div class="formula-box">MUF = f_c/cos(θ)</div>
+  <div class="formula-box">OWF = 0.85 × MUF</div>
+  <div class="formula-box">d_horizon ≈ 3.57·√h (km, h in m)</div>
+  <div class="formula-box">FSPL = 20log(d)+20log(f)+32.44 (km, MHz)</div>
 </div>
+<h4>Ionospheric Layers</h4>
 <ul>
-  <li><b>Ground wave</b>: &lt;2 MHz; follows earth curvature; attenuated by earth conductivity</li>
-  <li><b>Sky wave</b>: 2–30 MHz (HF); refracted by ionosphere; long-distance</li>
-  <li><b>Space wave</b>: VHF+; line-of-sight; limited by horizon</li>
-  <li><b>Ionosphere layers</b>: D (60–90 km), E (90–150 km), F1/F2 (150–400 km)</li>
-  <li>Critical freq: f_c = 9√N_max (N = electron density/m³)</li>
-  <li>MUF = f_c / sin(elevation angle); OWF ≈ 0.85 × MUF</li>
-  <li>Ducting: super-refraction; common in tropical coastal areas</li>
-  <li><b>Diversity</b>: space diversity (multiple antennas), freq diversity (multiple freqs)</li>
+  <li><b>D layer</b> (60–90 km): absorbs LF/MF during daylight; disappears at night; causes AM fading</li>
+  <li><b>E layer</b> (90–150 km): moderate refraction; sporadic-E can give unexpected VHF long-range propagation</li>
+  <li><b>F1/F2 layers</b> (150–400 km): primary HF reflectors; merge at night; F2 highest and most stable for long-distance</li>
+  <li><b>Skip distance</b>: minimum range where sky wave returns; within skip zone → no sky-wave reception</li>
+  <li><b>SID (Sudden Ionospheric Disturbance)</b>: solar flare causes HF blackout on daylit hemisphere for minutes to hours</li>
+  <li><b>Ducting</b>: temperature inversion traps VHF/UHF waves; anomalously long range; common in coastal/tropical areas</li>
+  <li><b>Troposcatter</b>: 350 MHz–10 GHz; scattering by tropospheric irregularities; 100–1000 km beyond-LOS links</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 18.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 19.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 15.</li>
+  <li>Rappaport, T.S. (2002). <i>Wireless Communications</i>, 2nd ed. Prentice Hall. Ch. 3.</li>
 </ul>
 </div></div>
 <div class="q" id="rp-ps1-q1" data-ans="c"><div class="qh"><div class="qn">1</div><div class="qt">____ is the amount of voltage induced in a wave by an electromagnetic wave</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Receive voltage</li><li data-ltr="b">b. Magnetic induction</li><li class="ok" data-ltr="c">c. Field strength</li><li data-ltr="d">d. Power density</li></ul></div>
@@ -883,29 +1107,48 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="rp-ps2" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="rp-ps2"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>RADIOWAVE PROPAGATION &amp; ANTENNA – PROBLEM SET 2 <span class="bc">30 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Antennas — Parameters &amp; Types</h4>
-<div class="svg-wrap"><svg width="280" height="150" viewBox="0 0 280 150" style="background:#0d1117;border-radius:6px">
-<text x="10" y="14" font-size="10" fill="#90caf9" font-family="monospace" font-weight="bold">Dipole Radiation Pattern (H-plane)</text>
-<circle cx="140" cy="80" r="55" fill="none" stroke="#2a2a3e" stroke-width="1" stroke-dasharray="3,3"/>
-<circle cx="140" cy="80" r="35" fill="none" stroke="#2a2a3e" stroke-width="1" stroke-dasharray="3,3"/>
-<path d="M140,80 Q168,40 196,80 Q168,120 140,80" fill="#1a237e88" stroke="#90caf9" stroke-width="1.5"/>
-<path d="M140,80 Q112,40 84,80 Q112,120 140,80" fill="#1a237e88" stroke="#90caf9" stroke-width="1.5"/>
-<line x1="140" y1="20" x2="140" y2="140" stroke="#ffd740" stroke-width="2" stroke-dasharray="4,2"/>
-<text x="143" y="18" font-size="9" fill="#ffd740" font-family="monospace">antenna axis (null)</text>
-<text x="200" y="83" font-size="9" fill="#90caf9" font-family="monospace">main lobe</text>
-</svg></div>
+<h4>Overview — Antenna Theory</h4>
+<p>An antenna converts guided-wave electrical energy into free-space electromagnetic waves, and vice versa. Every antenna is <b>reciprocal</b> — its transmit and receive characteristics are identical. Key parameters: gain, directivity, efficiency, bandwidth, polarization, radiation resistance, and beamwidth (Frenzel, Ch. 18; Tomasi, Ch. 18).</p>
 <div class="formula-row">
-  <div class="formula-box">G = η·D &nbsp; (gain = efficiency × directivity)</div>
+  <div class="formula-box">D = 4π·U_max / P_rad</div>
+  <div class="formula-box">G = η·D (η = efficiency)</div>
   <div class="formula-box">ERP = P_T · G</div>
+  <div class="formula-box">EIRP = P_T · G (ref. isotropic)</div>
   <div class="formula-box">A_eff = G·λ²/(4π)</div>
+  <div class="formula-box">L_dipole ≈ 0.48λ = 143/f(MHz) m</div>
 </div>
+<div class="svg-wrap"><svg width="420" height="152" viewBox="0 0 420 152" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Radiation Patterns: Isotropic | Half-wave Dipole | Yagi</text>
+<text x="70" y="28" text-anchor="middle" font-size="8" fill="#90a4ae">Isotropic (0 dBi)</text>
+<circle cx="70" cy="88" r="42" fill="none" stroke="#546e7a" stroke-width="1.5"/>
+<text x="70" y="145" text-anchor="middle" font-size="7" fill="#546e7a">Equal all directions</text>
+<text x="205" y="28" text-anchor="middle" font-size="8" fill="#90caf9">Half-wave Dipole (2.15 dBi)</text>
+<path d="M205,88 Q232,52 255,88 Q232,124 205,88" fill="#1a237e55" stroke="#90caf9" stroke-width="2"/>
+<path d="M205,88 Q178,52 155,88 Q178,124 205,88" fill="#1a237e55" stroke="#90caf9" stroke-width="2"/>
+<line x1="205" y1="45" x2="205" y2="131" stroke="#ffd740" stroke-width="3.5" stroke-linecap="round"/>
+<text x="215" y="43" font-size="7" fill="#ffd740">R_r=73 Ω</text>
+<text x="205" y="145" text-anchor="middle" font-size="7" fill="#90caf9">Figure-8, nulls at ends</text>
+<text x="355" y="28" text-anchor="middle" font-size="8" fill="#ffd740">Yagi (10+ dBi)</text>
+<path d="M310,88 Q330,62 355,67 Q380,72 400,88 Q380,104 355,109 Q330,114 310,88" fill="#4a300055" stroke="#ffd740" stroke-width="2"/>
+<path d="M310,88 Q300,82 295,88 Q300,94 310,88" fill="none" stroke="#ef9a9a" stroke-width="1.5"/>
+<text x="290" y="91" font-size="7" fill="#ef9a9a">back</text>
+<text x="355" y="145" text-anchor="middle" font-size="7" fill="#ffd740">Highly directional</text>
+</svg></div>
+<h4>Key Antenna Facts</h4>
 <ul>
-  <li>Half-wave dipole: L = λ/2; radiation resistance R_r ≈ 73 Ω; gain = 2.15 dBi</li>
-  <li>Marconi (quarter-wave): L = λ/4; R_r ≈ 36.5 Ω; requires ground plane</li>
-  <li>End effect: physical length ~5% shorter than electrical length</li>
-  <li>Beamwidth (HPBW): angle between −3 dB points of main lobe</li>
-  <li>Front-to-back ratio: main lobe gain vs rear lobe gain (dB)</li>
-  <li>Yagi: driven element + reflector + directors; high gain, narrow BW</li>
+  <li><b>Half-wave dipole</b>: L ≈ 0.48λ (end effect shortens by ~5%); R_r = 73.2 Ω; gain = 2.15 dBi = 0 dBd; figure-8 pattern with nulls at tips</li>
+  <li><b>Marconi (quarter-wave vertical)</b>: L = λ/4; R_r ≈ 36.5 Ω; gain = 5.15 dBi; requires ground plane (counterpoise); omnidirectional in horizontal plane</li>
+  <li><b>Polarization</b>: direction of E-field; horizontal, vertical, circular (RHCP/LHCP), or elliptical; transmit and receive must match for maximum power transfer</li>
+  <li><b>HPBW</b>: Half-Power Beamwidth = angle between −3 dB points; narrower → more directive</li>
+  <li><b>Front-to-back ratio</b>: main lobe vs. back lobe gain (dB); critical for interference rejection</li>
+  <li><b>Wave trap</b>: parallel LC resonator inserted in feedline to block specific frequency</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 18.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 18.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 14.</li>
+  <li>Balanis, C.A. (2016). <i>Antenna Theory: Analysis and Design</i>, 4th ed. Wiley.</li>
 </ul>
 </div></div>
 <div class="q" id="rp-ps2-q1" data-ans="b" data-sol="d=1.23×(√550+√200)=1.23×(23.45+14.14)=1.23×37.59=46.2 mi → 33.2 mi nearest"><div class="qh"><div class="qn">1</div><div class="qt">A microwave-transmitting antenna is 550 ft. high. The receiving antenna is 200 ft. high. The minimum transmission distance is</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. 20 mi</li><li class="ok" data-ltr="b">b. 33.2 mi</li><li data-ltr="c">c. 38.7 mi</li><li data-ltr="d">d. 53.2 mi</li></ul><div class="sol"><b>Solution</b>d=1.23×(√550+√200)=1.23×(23.45+14.14)=1.23×37.59=<b>46.2 mi → 33.2 mi nearest</b></div></div>
@@ -941,20 +1184,30 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="rp-ps3" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="rp-ps3"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>RADIOWAVE PROPAGATION &amp; ANTENNA – PROBLEM SET 3 <span class="bc">30 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Antenna Systems</h4>
+<h4>Overview — Antenna Arrays &amp; High-Gain Systems</h4>
+<p>Arrays combine multiple elements so radiation adds constructively in desired directions and destructively elsewhere, achieving high gain without large physical apertures (Frenzel, Ch. 18). Modern radar, satellite ground stations, and 5G massive MIMO base stations all rely on array principles.</p>
 <div class="formula-row">
+  <div class="formula-box">G_parabolic = η·(πD/λ)² (η≈0.55–0.75)</div>
+  <div class="formula-box">HPBW ≈ 70·λ/D (degrees)</div>
   <div class="formula-box">Friis: P_r = P_t·G_t·G_r·(λ/4πd)²</div>
-  <div class="formula-box">FSPL (dB) = 20log(d)+20log(f)+32.44</div>
+  <div class="formula-box">FSPL(dB) = 20log(d)+20log(f)+32.44</div>
 </div>
+<h4>Array Types</h4>
 <ul>
-  <li>Parabolic dish: gain G = η·(πD/λ)²; beamwidth = 70λ/D degrees</li>
-  <li>Horn antenna: transitional between waveguide and free space; low sidelobe</li>
-  <li>Log-periodic: wide bandwidth; constant impedance over freq range</li>
-  <li>Microstrip/patch: low profile; used in mobile/GPS</li>
-  <li>Polarization: linear (H or V), circular (RHCP/LHCP), elliptical</li>
-  <li>Counterpoise: elevated ground plane for vertical antennas</li>
-  <li>Wave trap: parallel LC circuit; blocks specific frequency on feedline</li>
-  <li>Rhombic: traveling-wave; highly directive; used for HF long-path circuits</li>
+  <li><b>Yagi-Uda</b>: driven half-wave dipole + reflector (longer, behind) + directors (shorter, in front); ≈1 dB gain per director; 6-element ≈ 10 dBd; used in UHF TV, amateur radio (Tomasi, Ch. 18)</li>
+  <li><b>Parabolic reflector</b>: focuses parallel rays to focal point (feed antenna); gain ∝ area/λ²; 3 m dish at 12 GHz ≈ 48 dBi; satellite ground stations, microwave links, radar</li>
+  <li><b>Log-periodic dipole array (LPDA)</b>: wideband (3:1+); constant impedance and gain; ratio τ of successive element lengths 0.7–0.98; HF broadband, measurements</li>
+  <li><b>Horn antenna</b>: flared waveguide; simple, low sidelobe; gain reference; mm-wave links; E-plane, H-plane, pyramidal, conical types</li>
+  <li><b>Microstrip/patch</b>: printed on PCB; low profile; narrow bandwidth; GPS, mobile devices, RFID, phased arrays</li>
+  <li><b>Phased array</b>: electronically steerable via element phase control; no mechanical movement; radar AESA, 5G massive MIMO</li>
+  <li><b>Rhombic</b>: terminated traveling-wave; 4 conductors in diamond; highly directive; HF long-distance point-to-point</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 18.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 18–19.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 14.</li>
+  <li>Balanis, C.A. (2016). <i>Antenna Theory</i>, 4th ed. Wiley. Ch. 6–10.</li>
 </ul>
 </div></div>
 <div class="q" id="rp-ps3-q1" data-ans="b" data-sol="f=c/(2L)=3×10⁸/(2×3.4)=44.1 MHz"><div class="qh"><div class="qn">1</div><div class="qt">The frequency of operation of a dipole antenna cut to a length of 3.4 m</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. 88 MHz</li><li class="ok" data-ltr="b">b. 44 MHz</li><li data-ltr="c">c. 22 MHz</li><li data-ltr="d">d. 11 MHz</li></ul><div class="sol"><b>Solution</b>f=c/(2L)=3×10⁸/(2×3.4)=<b>44.1 MHz</b></div></div>
@@ -990,21 +1243,41 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="law-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="law-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>ECE LAWS – PROBLEM SET 1 <span class="bc">100 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Philippine ECE Laws Quick Reference</h4>
+<h4>Overview — Philippine ECE Laws &amp; Regulations</h4>
+<p>The practice of Electronics Engineering in the Philippines is governed by a framework of laws, regulations, and a Code of Ethics. These laws protect the public, ensure technical competence, and regulate the telecommunications industry. Every ECE board candidate must master both technical regulations and the legal framework governing the profession.</p>
+<h4>Primary Laws</h4>
 <ul>
-  <li><b>RA 9292</b>: Electronics Engineering Law of 2004 — governs ECE/ECT practice</li>
-  <li><b>RA 7925</b>: Public Telecommunications Policy Act of the Philippines</li>
-  <li><b>RA 3846</b>: Radio Control Law (as amended)</li>
-  <li><b>RA 5734</b>: Electronics and Communications Engineering Act (superseded by RA 9292)</li>
-  <li>Min age for ECE board exam: 21 years old</li>
-  <li>ECE Seal components: name, license #, and signature</li>
-  <li>NTC: National Telecommunications Commission (regulatory)</li>
-  <li>PRC: Professional Regulation Commission (licensure)</li>
-  <li>AM broadcast: 535–1705 kHz; channel spacing 10 kHz</li>
-  <li>FM broadcast: 87.5–108 MHz; channel spacing 200 kHz (Phil: 100 kHz)</li>
-  <li>Antenna tower: &gt;60 m must be painted orange/white alternating</li>
-  <li>Frequency tolerance: ±20 ppm (AM broadcast); ±2 kHz (FM broadcast)</li>
-  <li>Grounding resistance (Phil Electronic Code): ≤ 5 Ω</li>
+  <li><b>RA 9292</b> (2004) — Electronics Engineering Law of 2004: supersedes RA 5734; establishes PRBECE; defines practice of ECE and ECT; sets examination/licensure requirements. ECE exam: BS ECE graduate, ≥21 years old at time of exam. ECT exam: BS ECT or 2-year course graduate.</li>
+  <li><b>RA 5734</b> (1969) — Original Electronics and Communications Engineering Act; superseded by RA 9292</li>
+  <li><b>RA 7925</b> (1995) — Public Telecommunications Policy Act: deregulates telecom sector; mandates interconnection; establishes universal service obligations; administered by NTC</li>
+  <li><b>RA 3846</b> (Radio Control Law, as amended): regulates broadcast radio; requires station licenses; frequency tolerances: AM broadcast ±20 Hz, FM ±2 kHz per NTC MC</li>
+</ul>
+<h4>Regulatory Bodies</h4>
+<ul>
+  <li><b>PRC</b> (Professional Regulation Commission): administers ECE board exam; issues Certificate of Registration and Professional ID Card; maintains roster of registered professionals; requires CPD compliance for renewal</li>
+  <li><b>NTC</b> (National Telecommunications Commission): quasi-judicial body; issues CPCN, Frequency Assignments, Station Licenses; enforces RA 7925 and RA 3846</li>
+  <li>ECE Official Seal: contains name, license number, signature; gives legal validity to engineering documents</li>
+</ul>
+<h4>Broadcasting Standards</h4>
+<ul>
+  <li>AM band: 535–1705 kHz; 10 kHz channel spacing; Class A max = 50 kW</li>
+  <li>FM band: 87.5–108 MHz; 200 kHz channel spacing; pilot tone = 19 kHz; stereo sub-carrier = 38 kHz</li>
+  <li>Tower height &gt; 60 m: alternating orange/white bands + aviation warning lights required</li>
+  <li>Grounding resistance: ≤5 Ω for telecoms equipment grounding systems (Philippine Electronic Code)</li>
+</ul>
+<h4>Key Legal Concepts</h4>
+<ul>
+  <li><b>Prima facie evidence</b>: sufficient to establish a fact unless rebutted; signed engineering documents have prima facie validity</li>
+  <li><b>Reciprocity</b>: Philippines may license foreign ECEs without exam if their country grants same to Filipino ECEs</li>
+  <li><b>Negligence</b>: failure to exercise reasonable care; engineers may be liable for negligent designs causing harm</li>
+  <li><b>Natural obligation</b>: moral duty not legally enforceable but valid if voluntarily performed</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Republic Act No. 9292 (2004). <i>Electronics Engineering Law of 2004</i>. Republic of the Philippines.</li>
+  <li>Republic Act No. 7925 (1995). <i>Public Telecommunications Policy Act</i>. Republic of the Philippines.</li>
+  <li>NTC Memorandum Circulars — Technical Standards for AM/FM Broadcast Stations.</li>
+  <li>Philippine Electronic Code — Grounding and Bonding Standards.</li>
 </ul>
 </div></div>
 <div class="q" id="law-ps1-q1" data-ans="b"><div class="qh"><div class="qn">1</div><div class="qt">The study and application of law to determine the legal rights and liabilities of the parties in electrical engineering cases.</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Legal engineering</li><li class="ok" data-ltr="b">b. Jurisprudence</li><li data-ltr="c">c. Technical law</li><li data-ltr="d">d. Engineering law</li></ul></div>
@@ -1110,22 +1383,49 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="ac-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="ac-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>ACOUSTICS &amp; BROADCASTING <span class="bc">145 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Acoustics &amp; Broadcasting Key Facts</h4>
+<h4>Overview — Acoustics &amp; Broadcasting</h4>
+<p>Acoustics is the science of sound — its generation, propagation, and reception. In electronic communications, acoustic principles underpin microphone/loudspeaker design, studio acoustics, broadcast standards, and audio engineering (Frenzel, Ch. 7–8; Tomasi, Ch. 16). Sound is a longitudinal mechanical pressure wave requiring a medium. The human ear perceives intensity over a 10¹²-fold range, compressed by the decibel scale into 0–130 dB.</p>
 <div class="formula-row">
-  <div class="formula-box">IL (dB) = 10·log(I/I₀) &nbsp; I₀=10⁻¹² W/m²</div>
-  <div class="formula-box">SPL (dB) = 20·log(P/P₀) &nbsp; P₀=20 μPa</div>
-  <div class="formula-box">T_r = 0.161·V/A [Sabine]</div>
+  <div class="formula-box">IL = 10·log(I/I₀) dB &nbsp; I₀=10⁻¹² W/m²</div>
+  <div class="formula-box">SPL = 20·log(P/P₀) dB &nbsp; P₀=20 μPa</div>
+  <div class="formula-box">T_r = 0.161·V/A [Sabine reverberation]</div>
+  <div class="formula-box">λ = v/f &nbsp; v_sound ≈ 343 m/s at 20°C</div>
 </div>
+<div class="svg-wrap"><svg width="420" height="125" viewBox="0 0 420 125" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Sound Level Scale &amp; NTSC TV Spectrum</text>
+<line x1="60" y1="20" x2="60" y2="80" stroke="#546e7a" stroke-width="1"/>
+<rect x="60" y="73" width="12" height="7" rx="1" fill="#4caf50"/><text x="76" y="80" font-size="7" fill="#e0e0e0">0 dB — Threshold of hearing</text>
+<rect x="60" y="64" width="25" height="7" rx="1" fill="#4caf50"/><text x="88" y="71" font-size="7" fill="#e0e0e0">20 dB — Whisper</text>
+<rect x="60" y="55" width="50" height="7" rx="1" fill="#a5d6a7"/><text x="114" y="62" font-size="7" fill="#e0e0e0">40 dB — Quiet library</text>
+<rect x="60" y="46" width="80" height="7" rx="1" fill="#ffd740"/><text x="144" y="53" font-size="7" fill="#e0e0e0">60 dB — Conversation</text>
+<rect x="60" y="37" width="115" height="7" rx="1" fill="#ff9800"/><text x="179" y="44" font-size="7" fill="#e0e0e0">80 dB — Heavy traffic</text>
+<rect x="60" y="28" width="155" height="7" rx="1" fill="#f44336"/><text x="219" y="35" font-size="7" fill="#fff">100 dB — Jackhammer</text>
+<rect x="60" y="19" width="190" height="7" rx="1" fill="#b71c1c"/><text x="254" y="26" font-size="7" fill="#fff">120 dB — Jet engine / Pain threshold</text>
+<line x1="10" y1="93" x2="410" y2="93" stroke="#546e7a" stroke-width="1"/>
+<text x="10" y="104" font-size="8" fill="#90caf9" font-weight="bold">NTSC TV (6 MHz channel):</text>
+<line x1="36" y1="93" x2="36" y2="112" stroke="#90caf9" stroke-width="4" stroke-linecap="round"/>
+<text x="36" y="123" text-anchor="middle" font-size="6" fill="#90caf9">Video +1.25M</text>
+<line x1="155" y1="93" x2="155" y2="107" stroke="#ffd740" stroke-width="3" stroke-linecap="round"/>
+<text x="155" y="120" text-anchor="middle" font-size="6" fill="#ffd740">Color 3.58MHz</text>
+<line x1="275" y1="93" x2="275" y2="108" stroke="#a5d6a7" stroke-width="3" stroke-linecap="round"/>
+<text x="275" y="120" text-anchor="middle" font-size="6" fill="#a5d6a7">Audio +4.5MHz</text>
+<text x="350" y="107" font-size="7" fill="#78909c">Aural FM +5.75M</text>
+</svg></div>
+<h4>Loudness Units &amp; NTSC Details</h4>
 <ul>
-  <li>Human hearing: 20 Hz – 20 kHz; threshold of pain ≈ 130 dB SPL</li>
-  <li>Loudness: sone (linear), phon (log); 1 sone = 40 phon at 1 kHz</li>
-  <li>NTSC TV: 525 lines, 30 frames/s (60 fields/s interlaced); 4:3 aspect ratio</li>
-  <li>Color subcarrier: 3.579545 MHz; Y = 0.30R + 0.59G + 0.11B</li>
-  <li>I signal: in-phase chrominance (orange-cyan axis); Q: quadrature (purple-green)</li>
-  <li>Horizontal sync: 15,750 Hz; vertical sync: 60 Hz</li>
-  <li>Visual carrier: 1.25 MHz above lower channel edge; aural: 4.5 MHz above visual</li>
-  <li>Stereo FM pilot: 19 kHz; L−R at 38 kHz DSB-SC; SCA at 67 kHz</li>
-  <li>Microphone impedance: low (150–600 Ω), medium (600–10kΩ), high (&gt;10kΩ)</li>
+  <li><b>Phon</b>: subjective loudness relative to 1 kHz reference; accounts for ear’s frequency-dependent sensitivity (Fletcher-Munson equal-loudness curves)</li>
+  <li><b>Sone</b>: linear loudness; 1 sone = 40 phon; 2 sones = twice as loud; 0.5 sone = half as loud</li>
+  <li>NTSC: 525 lines/frame; 30 fps; 60 fields/sec interlaced; 4:3 aspect; 483 active lines; f_H = 15,750 Hz</li>
+  <li>Luminance: Y = 0.30R + 0.59G + 0.11B (weighted for human vision sensitivity)</li>
+  <li>Color subcarrier: 3.579545 MHz; chosen to minimize interference with audio subcarrier at 4.5 MHz offset</li>
+  <li>Hue = color type; Saturation = color purity; Luminance = gray level</li>
+  <li>HDTV: 720p (1280×720), 1080i (1920×1080), 1080p, 4K (3840×2160)</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 7–8.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 16.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 1, 16.</li>
 </ul>
 </div></div>
 <div class="q" id="ac-ps1-q1" data-ans="b"><div class="qh"><div class="qn">1</div><div class="qt">Sound waves are ____ waves.</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Transverse</li><li class="ok" data-ltr="b">b. Longitudinal</li><li data-ltr="c">c. Electromagnetic</li><li data-ltr="d">d. Circular</li></ul></div>
@@ -1276,23 +1576,47 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="mw-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="mw-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>MICROWAVES – PROBLEM SET 1 <span class="bc">35 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Microwave Fundamentals</h4>
+<h4>Overview — Microwave Fundamentals &amp; Waveguides</h4>
+<p>Microwaves occupy 1–300 GHz (wavelength 30 cm to 1 mm). At these frequencies, conventional lumped-circuit theory breaks down. Instead, <b>distributed-circuit theory</b>, <b>waveguide theory</b>, and specialized microwave active devices dominate (Frenzel, Ch. 16; Tomasi, Ch. 20). Applications span radar, satellite communications, cellular systems, microwave relay links, and microwave ovens.</p>
+<div class="svg-wrap"><svg width="420" height="110" viewBox="0 0 420 110" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Rectangular Waveguide — TE₁₀ Dominant Mode &amp; Microwave Bands</text>
+<rect x="80" y="22" width="250" height="60" rx="4" fill="none" stroke="#90caf9" stroke-width="2"/>
+<rect x="88" y="29" width="234" height="46" rx="2" fill="#1a237e22"/>
+<line x1="130" y1="29" x2="130" y2="75" stroke="#ffd740" stroke-width="1.2" stroke-dasharray="3,2"/>
+<line x1="160" y1="29" x2="160" y2="75" stroke="#ffd740" stroke-width="1.5" stroke-dasharray="3,2"/>
+<line x1="190" y1="29" x2="190" y2="75" stroke="#ffd740" stroke-width="2" stroke-dasharray="3,2"/>
+<line x1="220" y1="29" x2="220" y2="75" stroke="#ffd740" stroke-width="2" stroke-dasharray="3,2"/>
+<line x1="250" y1="29" x2="250" y2="75" stroke="#ffd740" stroke-width="1.5" stroke-dasharray="3,2"/>
+<line x1="280" y1="29" x2="280" y2="75" stroke="#ffd740" stroke-width="1.2" stroke-dasharray="3,2"/>
+<text x="205" y="92" text-anchor="middle" font-size="7" fill="#ffd740">E-field lines (max at centre, zero at walls)</text>
+<text x="77" y="59" text-anchor="end" font-size="9" fill="#a5d6a7">b</text>
+<text x="205" y="20" text-anchor="middle" font-size="9" fill="#a5d6a7">a (&gt; λ/2)</text>
+<text x="10" y="104" font-size="7" fill="#78909c">L:1-2G ATC/GPS  S:2-4G weather  C:4-8G satellite  X:8-12G mil-radar  Ku:12-18G DBS  Ka:27-40G HTS/5G</text>
+</svg></div>
 <div class="formula-row">
-  <div class="formula-box">λ_c = 2a (TE₁₀ dominant mode)</div>
-  <div class="formula-box">f_c = c/(2a) &nbsp; (cutoff freq)</div>
+  <div class="formula-box">f_c(TE₁₀) = c/(2a)</div>
+  <div class="formula-box">λ_g = λ/√(1−(f_c/f)²)</div>
+  <div class="formula-box">Z_TE = η/√(1−(f_c/f)²)</div>
   <div class="formula-box">v_g = c·√(1−(f_c/f)²)</div>
 </div>
+<h4>Microwave Active Devices (Tomasi, Ch. 20)</h4>
 <ul>
-  <li>Microwave: 1 GHz – 300 GHz (λ = 30 cm – 1 mm)</li>
-  <li>Waveguide: hollow metal pipe; no TEM mode; supports TE and TM modes</li>
-  <li>TE₁₀ mode: dominant in rectangular waveguide; a &gt; b; a &gt; λ/2</li>
-  <li>Klystron: velocity modulation; buncher + catcher cavities; high power</li>
-  <li>Magnetron: crossed E and B fields; oscillator; used in radar/microwave ovens</li>
-  <li>TWT (Traveling Wave Tube): wideband amplifier; helix structure</li>
-  <li>Gunn diode: negative resistance; Gunn oscillator; GaAs</li>
-  <li>IMPATT: avalanche transit-time; high power oscillator</li>
-  <li>PIN diode: microwave switch/attenuator; p-intrinsic-n</li>
-  <li>Circulators and isolators: ferrite devices for direction control</li>
+  <li><b>Klystron</b>: velocity-modulated tube; buncher + drift + catcher; high power (kW–MW); narrowband; radar transmitters, satellite uplinks</li>
+  <li><b>Magnetron</b>: crossed E &amp; B fields; self-oscillating; highest pulsed power density; radar and microwave ovens (2.45 GHz)</li>
+  <li><b>TWT (Travelling Wave Tube)</b>: wideband amplifier; electron beam + helix slow-wave structure; satellite transponders, EW systems</li>
+  <li><b>Gunn diode</b>: GaAs; negative resistance (Gunn effect / transferred electron); 1–100 GHz oscillator; motion detectors, LOs</li>
+  <li><b>IMPATT diode</b>: Impact Ionization Avalanche Transit-Time; high power; noisy; 3–300 GHz</li>
+  <li><b>PIN diode</b>: p–intrinsic–n; DC-controlled resistance; microwave switch, attenuator, phase shifter; 1 MHz–50 GHz</li>
+  <li><b>Schottky diode</b>: metal-semiconductor; very fast (no minority carrier storage); mixers and detectors at mm-wave</li>
+  <li><b>Circulator</b>: 3-port ferrite; power flows 1→2→3→1; used as duplexer; protects power amplifiers from reflections</li>
+  <li><b>Isolator</b>: 2-port; forward pass, reverse blocked; protects oscillators and PAs</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 16.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 20.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 17.</li>
+  <li>Pozar, D.M. (2011). <i>Microwave Engineering</i>, 4th ed. Wiley. Ch. 3–10.</li>
 </ul>
 </div></div>
 <div class="q" id="mw-ps1-q1" data-ans="b"><div class="qh"><div class="qn">1</div><div class="qt">A ferrite device that allows signal to flow only in one direction.</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Circulator</li><li class="ok" data-ltr="b">b. Isolator</li><li data-ltr="c">c. Attenuator</li><li data-ltr="d">d. Filter</li></ul></div>
@@ -1333,21 +1657,44 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="mw-ps2" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="mw-ps2"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>MICROWAVES – PROBLEM SET 2 <span class="bc">35 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Microwave Systems &amp; Radar</h4>
+<h4>Overview — Radar &amp; Microwave Systems</h4>
+<p>Radar (Radio Detection And Ranging) transmits pulses of microwave energy and measures round-trip time to determine target range. It is one of the most important microwave applications, used in air traffic control, weather monitoring, maritime navigation, automotive collision avoidance, and military systems (Frenzel, Ch. 16; Tomasi, Ch. 20).</p>
 <div class="formula-row">
-  <div class="formula-box">Radar: R = c·t/2</div>
-  <div class="formula-box">P_r = P_t·G²·λ²·σ / ((4π)³·R⁴)</div>
-  <div class="formula-box">f_Doppler = 2·v·f_c/c</div>
+  <div class="formula-box">R = c·t/2 (round-trip time)</div>
+  <div class="formula-box">Radar eq: P_r = P_t·G²·λ²·σ/((4π)³·R⁴)</div>
+  <div class="formula-box">R_max = c/(2·PRF)</div>
+  <div class="formula-box">ΔR = c·τ/2 [range resolution]</div>
+  <div class="formula-box">f_d = 2v·f_c/c [Doppler shift]</div>
 </div>
+<div class="svg-wrap"><svg width="420" height="90" viewBox="0 0 420 90" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Pulsed Radar Timing Parameters</text>
+<line x1="10" y1="40" x2="410" y2="40" stroke="#546e7a" stroke-width="1"/>
+<rect x="20" y="25" width="40" height="15" rx="2" fill="#90caf9" opacity=".9"/>
+<text x="40" y="36" text-anchor="middle" font-size="8" fill="#000">τ</text>
+<rect x="110" y="25" width="40" height="15" rx="2" fill="#90caf9" opacity=".9"/>
+<rect x="200" y="25" width="40" height="15" rx="2" fill="#90caf9" opacity=".9"/>
+<rect x="290" y="25" width="40" height="15" rx="2" fill="#90caf9" opacity=".9"/>
+<line x1="20" y1="50" x2="110" y2="50" stroke="#ffd740" stroke-width="1.5"/>
+<text x="65" y="62" text-anchor="middle" font-size="7" fill="#ffd740">PRT = 1/PRF</text>
+<text x="65" y="72" text-anchor="middle" font-size="7" fill="#78909c">R_max = c/(2×PRF)</text>
+<line x1="10" y1="78" x2="410" y2="78" stroke="#546e7a" stroke-width="1"/>
+<text x="10" y="88" font-size="7" fill="#78909c">Duty cycle = τ×PRF; shorter τ → finer ΔR but less pulse energy; compensate with pulse compression</text>
+</svg></div>
+<h4>Radar Modes &amp; Types</h4>
 <ul>
-  <li>Radar PRF: pulse repetition frequency; max unambiguous range = c/(2·PRF)</li>
-  <li>Radar resolution: ΔR = c·τ/2 (τ = pulse width); smaller τ = finer resolution</li>
-  <li>Doppler radar: measures radial velocity; CW or pulsed Doppler</li>
-  <li>Microstrip line: TEM mode; used in MMICs; ε_eff &lt; ε_r</li>
-  <li>Slot antenna: complementary to dipole; used on waveguide walls</li>
-  <li>Frequency bands: L(1–2 GHz), S(2–4), C(4–8), X(8–12), Ku(12–18), K(18–27), Ka(27–40)</li>
-  <li>LNA: Low-Noise Amplifier; first stage after antenna; minimizes cascade NF</li>
-  <li>Mixer: frequency conversion; outputs f_IF = f_RF ± f_LO</li>
+  <li><b>Pulsed radar</b>: transmits short bursts; time-of-flight gives range; most common type (ATC, maritime, weather)</li>
+  <li><b>Doppler radar</b>: measures radial velocity via frequency shift f_d = 2v·f_c/c; weather radar (precipitation velocity), speed guns, ATC</li>
+  <li><b>FMCW (Frequency Modulated CW)</b>: simultaneously transmits and receives; range from beat frequency; automotive radar (76–81 GHz), altimeters</li>
+  <li><b>Radar cross section (RCS, σ)</b>: effective reflecting area; depends on shape, material, aspect angle; expressed in dBsm</li>
+  <li><b>Pulse compression (chirp)</b>: transmit wide FM pulse; match-filter compress at receiver; achieves fine range resolution with high energy</li>
+  <li><b>SAR (Synthetic Aperture Radar)</b>: aircraft/satellite uses motion to synthesize large antenna aperture; fine cross-range resolution; Earth observation, mapping</li>
+  <li>Rain fade at Ku/Ka band: up to 15 dB/km in tropical rain; mitigated by link margin and Adaptive Coding &amp; Modulation</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 16.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 20.</li>
+  <li>Skolnik, M.I. (2001). <i>Introduction to Radar Systems</i>, 3rd ed. McGraw-Hill.</li>
 </ul>
 </div></div>
 <div class="q" id="mw-ps2-q1" data-ans="a" data-sol="f_c=c/(2a)=3×10⁸/(2×0.02286)=6.56 GHz"><div class="qh"><div class="qn">1</div><div class="qt">What is the cutoff frequency of a rectangular waveguide with inner dimensions of 2.286 cm × 1.016 cm for the dominant mode?</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li class="ok" data-ltr="a">a. 6.56 GHz</li><li data-ltr="b">b. 13.12 GHz</li><li data-ltr="c">c. 3.28 GHz</li><li data-ltr="d">d. 9.84 GHz</li></ul><div class="sol"><b>Solution</b>f_c=c/(2a)=3×10⁸/(2×0.02286)=<b>6.56 GHz</b></div></div>
@@ -1388,23 +1735,49 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="sat-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="sat-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>SATELLITE COMMUNICATIONS – PROBLEM SET 1 <span class="bc">70 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Satellite Communications</h4>
+<h4>Overview — Satellite Communications</h4>
+<p>A satellite serves as a relay station visible to large areas simultaneously. The first commercial satellite, Intelsat I (1965), carried 240 telephone circuits. Today GEO satellites provide tens of thousands of circuits and direct broadcast TV; LEO constellations (Starlink, OneWeb) deliver global broadband with &lt;50 ms latency (Frenzel, Ch. 19; Tomasi, Ch. 21).</p>
+<div class="svg-wrap"><svg width="420" height="152" viewBox="0 0 420 152" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Satellite Orbital Types</text>
+<circle cx="210" cy="122" r="22" fill="#1b3a00" stroke="#4caf50" stroke-width="2"/>
+<text x="210" y="127" text-anchor="middle" font-size="7" fill="#a5d6a7">Earth</text>
+<ellipse cx="210" cy="122" rx="52" ry="22" fill="none" stroke="#90caf9" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="265" y="102" font-size="7" fill="#90caf9">LEO 200–2000km</text>
+<text x="265" y="112" font-size="7" fill="#78909c">T≈90–128min 1–5ms</text>
+<ellipse cx="210" cy="122" rx="92" ry="42" fill="none" stroke="#ffd740" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="305" y="82" font-size="7" fill="#ffd740">MEO 2k–36k km</text>
+<text x="305" y="92" font-size="7" fill="#78909c">GPS@20200km 50ms</text>
+<ellipse cx="210" cy="122" rx="160" ry="72" fill="none" stroke="#ef9a9a" stroke-width="2"/>
+<text x="373" y="52" font-size="7" fill="#ef9a9a">GEO 35,786km</text>
+<text x="373" y="62" font-size="7" fill="#78909c">T=24hr 270ms</text>
+<circle cx="262" cy="102" r="3" fill="#90caf9"/>
+<circle cx="302" cy="82" r="3" fill="#ffd740"/>
+<circle cx="370" cy="50" r="4" fill="#ef9a9a"/>
+</svg></div>
 <div class="formula-row">
-  <div class="formula-box">GEO altitude: 35,786 km</div>
-  <div class="formula-box">T = 2π·√(r³/GM) = 24 hr (GEO)</div>
-  <div class="formula-box">EIRP = P_t · G_t (dBW)</div>
+  <div class="formula-box">T² = (4π²/GM)·r³ [Kepler’s 3rd]</div>
+  <div class="formula-box">GEO: r = 42,164 km; altitude = 35,786 km</div>
+  <div class="formula-box">EIRP = P_T + G_T (dBW)</div>
+  <div class="formula-box">C/N = EIRP − FSPL + G/T − k − B</div>
+  <div class="formula-box">FSPL = 20log(d)+20log(f)+92.45 (GHz, km)</div>
+  <div class="formula-box">G/T = G_rx − 10·log(T_sys) dB/K</div>
 </div>
+<h4>Satellite Bands &amp; Access Methods</h4>
 <ul>
-  <li>GEO: geostationary (0° inclination, circular, 35,786 km); propagation delay ≈270 ms one-way</li>
-  <li>LEO: 200–2000 km; MEO: 2000–36,000 km (GPS at 20,200 km)</li>
-  <li>C-band uplink: 5.925–6.425 GHz; downlink: 3.7–4.2 GHz</li>
-  <li>Ku-band uplink: 14–14.5 GHz; downlink: 11.7–12.2 GHz</li>
-  <li>Ka-band: 30/20 GHz; V-band: 50 GHz+</li>
-  <li>Link budget: P_r(dBW) = EIRP − FSPL + G/T − losses</li>
-  <li>G/T: Figure of merit (antenna gain / system noise temperature)</li>
-  <li>VSAT: small dish (&lt;3m); star or mesh topology; Ku/Ka band</li>
-  <li>TDMA/FDMA/CDMA: multiple access schemes for satellite</li>
-  <li>Rain fade: main impairment at Ku/Ka band; fade margin needed</li>
+  <li><b>C-band</b>: uplink 5.925–6.425 GHz / downlink 3.7–4.2 GHz; less rain fade; large dish (3–5 m)</li>
+  <li><b>Ku-band</b>: up 14–14.5 GHz / down 11.7–12.2 GHz; DBS/VSAT; small dish (0.6–1.8 m); rain fade risk</li>
+  <li><b>Ka-band</b>: up ∶30 GHz / down ∶20 GHz; very high capacity HTS; severe rain fade; tiny dish</li>
+  <li><b>FDMA</b>: each carrier has own frequency; simple; inefficient for bursty traffic</li>
+  <li><b>TDMA</b>: time slots shared on same frequency; efficient for digital voice</li>
+  <li><b>CDMA</b>: spread-spectrum codes separate users; used in GPS, some VSAT systems</li>
+  <li><b>VSAT</b>: dish &lt;3 m; star or mesh topology; Ku/Ka; enterprise data, rural broadband</li>
+  <li><b>DTH/DBS</b>: direct-to-home; Ku-band; 0.6 m dish; MPEG-4/DVB-S2 video</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 19.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 21.</li>
+  <li>Pratt, T., Bostian, C., &amp; Allnutt, J. (2003). <i>Satellite Communications</i>, 2nd ed. Wiley.</li>
 </ul>
 </div></div>
 <div class="q" id="sat-ps1-q1" data-ans="d"><div class="qh"><div class="qn">1</div><div class="qt">The first passive satellite</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Telstar</li><li data-ltr="b">b. Early Bird</li><li data-ltr="c">c. Sputnik I</li><li class="ok" data-ltr="d">d. Moon</li></ul></div>
@@ -1480,20 +1853,38 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="wc-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="wc-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>WIRECOM &amp; CELLULAR TELEPHONY – PROBLEM SET 1 <span class="bc">35 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Wireline Communications</h4>
+<h4>Overview — Wireline Communications &amp; PSTN</h4>
+<p>The PSTN (Public Switched Telephone Network) is the world’s oldest communications infrastructure. Originally all-analog, it has been largely digitized with only the local loop remaining copper in many areas (Frenzel, Ch. 13; Tomasi, Ch. 12). Understanding PSTN architecture, signaling, and the transition to DSL broadband is essential.</p>
 <div class="formula-row">
-  <div class="formula-box">Loop resistance ≤ 1300 Ω (local loop)</div>
-  <div class="formula-box">DSL: twisted pair; ADSL: 8 Mbps DL / 640 kbps UL</div>
+  <div class="formula-box">DC feed: −48 V (ring = −48 V, tip = 0 V)</div>
+  <div class="formula-box">Ringing: 90 V AC, 20 Hz; 2s on / 4s off (US)</div>
+  <div class="formula-box">ADSL: DL 8 Mbps / UL 640 kbps</div>
+  <div class="formula-box">ADSL2+: DL 24 Mbps / UL 1 Mbps</div>
+  <div class="formula-box">VDSL2: DL/UL 100+ Mbps (short loop)</div>
 </div>
+<h4>PSTN Architecture</h4>
 <ul>
-  <li>PSTN: Public Switched Telephone Network; 300–3400 Hz voice channel (4 kHz BW)</li>
-  <li>Signaling: in-band (MF, DTMF) or out-of-band (SS7); DTMF = dual-tone MF</li>
-  <li>Telephone numbering: E.164; country code + area code + subscriber</li>
-  <li>FXS port: connects to telephone; FXO port: connects to phone line</li>
-  <li>POTS: plain old telephone service; tip = −48V; ring = AC 90V 20Hz ringing</li>
-  <li>Echo: reflected signal; echo canceller required when delay &gt;25 ms</li>
-  <li>Crosstalk: NEXT (near-end), FEXT (far-end); reduced by twisted pairs</li>
-  <li>xDSL: ADSL, ADSL2+, VDSL2; uses DMT (discrete multi-tone) modulation</li>
+  <li><b>Local loop</b>: twisted copper pair from subscriber to CO; typically &lt;5 km; loop resistance ≤1300 Ω for proper signaling</li>
+  <li><b>Central Office (CO)</b>: local exchange switch; provides dial tone, switching, billing; connected via trunks to other COs</li>
+  <li><b>DTMF</b>: Dual-Tone Multi-Frequency; each key sends two simultaneous tones (697/770/852/941 Hz × 1209/1336/1477/1633 Hz); replaces pulse dialing</li>
+  <li><b>FXS</b>: Foreign Exchange Subscriber port; connects to handset; provides ring, dial tone, DC voltage</li>
+  <li><b>FXO</b>: Foreign Exchange Office port; connects to CO line; senses ring, seizes line</li>
+</ul>
+<h4>DSL Technologies</h4>
+<p>xDSL transmits data at high speed over existing copper loops by using frequencies above the 4 kHz voice band. DMT (Discrete Multi-Tone) modulation divides bandwidth into 256 sub-channels (4.3125 kHz each), each modulated with QAM. Poor sub-channels carry fewer bits (bit-loading) (Frenzel, Ch. 14).</p>
+<ul>
+  <li>ADSL2/2+: 2.2/17.664 MHz bandwidth; distance-limited</li>
+  <li>VDSL2 (G.993.2): up to 17 or 35 MHz; &gt;100 Mbps symmetric over short loops (&lt;300 m)</li>
+  <li>G.fast: 106/212 MHz; up to 1 Gbps over loops &lt;100 m; used in FTTB</li>
+  <li>Vectoring (G.vector): cancels FEXT crosstalk using DSP; dramatic loop-length performance recovery</li>
+</ul>
+<h4>Echo Control</h4>
+<p>In long-distance circuits, 4-wire/2-wire hybrid conversion creates echo. When delay &gt;25 ms, echo disturbs the talker. Modern <b>echo cancelers</b> (adaptive digital filters) eliminate echo in all long-distance and VoIP circuits (Blake, Ch. 13).</p>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 13–14.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 12.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 13.</li>
 </ul>
 </div></div>
 <div class="q" id="wc-ps1-q1" data-ans="b"><div class="qh"><div class="qn">1</div><div class="qt">The telephone was invented by ____</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Edison</li><li class="ok" data-ltr="b">b. Bell</li><li data-ltr="c">c. Strowger</li><li data-ltr="d">d. Marconi</li></ul></div>
@@ -1534,20 +1925,50 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="wc-ps2" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="wc-ps2"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>WIRECOM &amp; CELLULAR TELEPHONY – PROBLEM SET 2 <span class="bc">35 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Cellular Telephony</h4>
+<h4>Overview — Cellular Telephony (1G–3G)</h4>
+<p>Cellular systems divide a geographic area into cells, each served by a low-power base station. The key innovation is <b>frequency reuse</b> — the same frequencies in non-adjacent cells, dramatically boosting capacity. When a mobile moves between cells, a <b>handoff</b> transfers the call (Frenzel, Ch. 14; Tomasi, Ch. 13).</p>
+<div class="svg-wrap"><svg width="420" height="120" viewBox="0 0 420 120" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Cellular Frequency Reuse Pattern (N=7) &amp; Generations</text>
+<polygon points="100,58 118,28 154,28 172,58 154,88 118,88" fill="#1a237e22" stroke="#90caf9" stroke-width="1.5"/><text x="136" y="61" text-anchor="middle" font-size="9" fill="#90caf9">1</text>
+<polygon points="172,58 190,28 226,28 244,58 226,88 190,88" fill="#1b3a0022" stroke="#a5d6a7" stroke-width="1.5"/><text x="208" y="61" text-anchor="middle" font-size="9" fill="#a5d6a7">2</text>
+<polygon points="244,58 262,28 298,28 316,58 298,88 262,88" fill="#4a1f0022" stroke="#ffd740" stroke-width="1.5"/><text x="280" y="61" text-anchor="middle" font-size="9" fill="#ffd740">3</text>
+<polygon points="136,88 154,58 190,58 208,88 190,118 154,118" fill="#4a000022" stroke="#ef9a9a" stroke-width="1.5"/><text x="172" y="91" text-anchor="middle" font-size="9" fill="#ef9a9a">4</text>
+<polygon points="208,88 226,58 262,58 280,88 262,118 226,118" fill="#00003a22" stroke="#7986cb" stroke-width="1.5"/><text x="244" y="91" text-anchor="middle" font-size="9" fill="#7986cb">5</text>
+<polygon points="64,88 82,58 118,58 136,88 118,118 82,118" fill="#003a2022" stroke="#80cbc4" stroke-width="1.5"/><text x="100" y="91" text-anchor="middle" font-size="9" fill="#80cbc4">6</text>
+<polygon points="64,28 82,0 118,0 136,28 118,58 82,58" fill="#3a002022" stroke="#ce93d8" stroke-width="1.5"/><text x="100" y="31" text-anchor="middle" font-size="9" fill="#ce93d8">7</text>
+<text x="340" y="30" font-size="8" fill="#90a4ae">1G: AMPS FM/FDMA</text>
+<text x="340" y="42" font-size="8" fill="#90a4ae">2G: GSM TDMA+FDMA</text>
+<text x="340" y="54" font-size="8" fill="#90a4ae">2.5G: GPRS/EDGE</text>
+<text x="340" y="66" font-size="8" fill="#90a4ae">3G: WCDMA CDMA</text>
+<text x="340" y="78" font-size="8" fill="#90a4ae">3.5G: HSDPA/HSUPA</text>
+<text x="10" y="115" font-size="7" fill="#78909c">D/R = √(3N) = 4.58 (N=7); capacity ∝ 1/N; cells smaller → more frequency reuse → more capacity</text>
+</svg></div>
 <div class="formula-row">
-  <div class="formula-box">Frequency reuse: N = i²+ij+j²</div>
-  <div class="formula-box">Cells per cluster: 4, 7, 12, 19…</div>
+  <div class="formula-box">N = i² + ij + j² (cluster size)</div>
+  <div class="formula-box">D/R = √(3N)</div>
+  <div class="formula-box">Capacity ∝ 1/N</div>
 </div>
+<h4>Cellular Generations</h4>
 <ul>
-  <li><b>1G (AMPS)</b>: analog FM; 800 MHz; FDMA; 30 kHz channels</li>
-  <li><b>2G (GSM)</b>: digital; 900/1800 MHz; TDMA + FDMA; 200 kHz ch; 8 slots/ch</li>
-  <li><b>2.5G (GPRS)</b>: packet data on GSM; up to 171 kbps</li>
-  <li><b>3G (WCDMA/UMTS)</b>: 2.1 GHz; CDMA; 3.84 Mcps; 5 MHz BW</li>
-  <li><b>Handoff/handover</b>: transfer call to new cell; hard (GSM) vs soft (CDMA)</li>
-  <li>Cell splitting: reduce cell size to increase capacity in dense areas</li>
-  <li>SIM: subscriber identity module; IMSI, Ki, authentication</li>
-  <li>GSM architecture: MS→BTS→BSC→MSC→PSTN/HLR/VLR</li>
+  <li><b>1G (AMPS, 1983)</b>: Analog FM; 800 MHz; FDMA; 30 kHz channels; no encryption; vulnerable to cloning</li>
+  <li><b>2G (GSM, 1991)</b>: Digital; TDMA+FDMA; 200 kHz channels; 8 time slots; 13 kbps voice (RPE-LTP); SIM card; SMS; A5/1 encryption</li>
+  <li><b>2.5G (GPRS)</b>: packet overlay on GSM; up to 171.2 kbps; EDGE adds 8-PSK for 384 kbps</li>
+  <li><b>3G (WCDMA/UMTS, 2001)</b>: CDMA; 5 MHz channel; 3.84 Mcps; 384 kbps–2 Mbps; soft handoff; rake receiver</li>
+  <li><b>3.5G (HSDPA)</b>: 16-QAM, multi-code; peak 42 Mbps DL (HSPA+)</li>
+</ul>
+<h4>GSM Architecture</h4>
+<ul>
+  <li>MS → BTS → BSC → MSC → PSTN/ISDN</li>
+  <li><b>HLR</b>: permanent subscriber database (IMSI, services, current VLR address)</li>
+  <li><b>VLR</b>: temporary HLR copy for mobiles in MSC area; speeds call setup</li>
+  <li><b>AuC</b>: generates authentication triplets (RAND, SRES, Kc)</li>
+  <li>GSM handover: hard (break-before-make); UMTS: soft (make-before-break)</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 14.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 13.</li>
+  <li>Rappaport, T.S. (2002). <i>Wireless Communications</i>, 2nd ed. Prentice Hall. Ch. 10.</li>
 </ul>
 </div></div>
 <div class="q" id="wc-ps2-q1" data-ans="c"><div class="qh"><div class="qn">1</div><div class="qt">The first cellular telephone system in the US was ____</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. GSM</li><li data-ltr="b">b. IS-54</li><li class="ok" data-ltr="c">c. AMPS</li><li data-ltr="d">d. CDMA</li></ul></div>
@@ -1588,20 +2009,38 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="wc-ps3" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="wc-ps3"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>WIRECOM &amp; CELLULAR TELEPHONY – PROBLEM SET 3 <span class="bc">30 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>4G/5G &amp; Advanced Cellular</h4>
+<h4>Overview — 4G LTE &amp; 5G New Radio</h4>
+<p>4G LTE and 5G NR represent the full transition to all-IP, packet-switched mobile networks. They achieve orders-of-magnitude improvements through <b>OFDMA</b>, <b>MIMO</b>, <b>massive antenna arrays</b>, and <b>millimeter-wave spectrum</b> (Frenzel, Ch. 14). 5G NR targets three use cases: eMBB (high speed), URLLC (ultra-low latency), and mMTC (massive IoT).</p>
 <div class="formula-row">
-  <div class="formula-box">LTE: OFDMA (DL), SC-FDMA (UL)</div>
-  <div class="formula-box">5G NR: sub-6 GHz + mmWave (24–100 GHz)</div>
+  <div class="formula-box">LTE subcarrier spacing: 15 kHz</div>
+  <div class="formula-box">Resource Block: 12 subcarriers × 0.5 ms</div>
+  <div class="formula-box">LTE peak DL ≈300 Mbps (2×2 MIMO, 64-QAM)</div>
+  <div class="formula-box">LTE latency ≈10 ms user-plane</div>
+  <div class="formula-box">5G peak: 20 Gbps DL / 10 Gbps UL</div>
+  <div class="formula-box">5G URLLC: &lt;1 ms latency, 99.9999% reliability</div>
 </div>
+<h4>LTE Air Interface</h4>
 <ul>
-  <li><b>LTE (4G)</b>: OFDMA; up to 100 MHz BW; peak 300 Mbps DL</li>
-  <li><b>LTE-Advanced</b>: carrier aggregation; MIMO; up to 1 Gbps</li>
-  <li><b>5G NR</b>: eMBB (enhanced mobile broadband), URLLC, mMTC</li>
-  <li>OFDM: orthogonal subcarriers; robust against multipath; used in LTE/5G/WiFi</li>
-  <li>MIMO: multiple-input multiple-output; increases capacity via spatial multiplexing</li>
-  <li>Beamforming: massive MIMO with phased array; directs energy to user</li>
-  <li>Small cells: femto, pico, micro cells for coverage/capacity in dense areas</li>
-  <li>Network slicing (5G): virtual network partitions for different use cases</li>
+  <li><b>Downlink: OFDMA</b> — multiple users on different subcarriers; robust against multipath (cyclic prefix)</li>
+  <li><b>Uplink: SC-FDMA</b> — single-carrier preserves low PAPR for handset battery life</li>
+  <li>Channel bandwidths: 1.4, 3, 5, 10, 15, 20 MHz; 20 MHz = 100 resource blocks</li>
+  <li>LTE-A: carrier aggregation (up to 5×20 MHz = 100 MHz); 8×8 MIMO; target 1 Gbps DL</li>
+  <li>EPC: all-IP core; MME (mobility), SGW (serving GW), PGW (PDN GW)</li>
+</ul>
+<h4>5G NR Features</h4>
+<ul>
+  <li><b>Sub-6 GHz (FR1)</b>: 450 MHz–6 GHz; good coverage; nationwide eMBB and mMTC</li>
+  <li><b>mmWave (FR2)</b>: 24.25–52.6 GHz; enormous bandwidth; very high capacity; short range (100–300 m); requires dense cells and beamforming</li>
+  <li><b>Massive MIMO</b>: 32–256+ antennas at base station; 3D beamforming; beam tracking; spatial multiplexing</li>
+  <li><b>Network slicing</b>: virtualized network segments with customized QoS on shared physical infrastructure; enabled by NFV and SDN</li>
+  <li><b>O-RAN</b>: Open RAN; disaggregated architecture; multi-vendor interoperability</li>
+  <li>5G NR numerology: Δf = 15, 30, 60, 120, 240 kHz (scalable subcarrier spacing for different use cases)</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 14.</li>
+  <li>Dahlman, E., Parkvall, S., &amp; Sköld, J. (2020). <i>5G NR: The Next Generation Wireless Access Technology</i>. Academic Press.</li>
+  <li>3GPP TS 38.201–38.300 — 5G NR Physical Layer Specifications.</li>
 </ul>
 </div></div>
 <div class="q" id="wc-ps3-q1" data-ans="a"><div class="qh"><div class="qn">1</div><div class="qt">Roaming in cellular telephony means ____</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li class="ok" data-ltr="a">a. Using a phone outside its home coverage area</li><li data-ltr="b">b. Switching between frequencies</li><li data-ltr="c">c. Changing SIM cards</li><li data-ltr="d">d. Using multiple phones</li></ul></div>
@@ -1637,36 +2076,57 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="fo-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="fo-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>FIBER OPTICS – PROBLEM SET 1 <span class="bc">70 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Fiber Optics</h4>
-<div class="svg-wrap"><svg width="360" height="100" viewBox="0 0 360 100" style="background:#0d1117;border-radius:6px">
-<text x="10" y="14" font-size="10" fill="#90caf9" font-family="monospace" font-weight="bold">Fiber Optic — Refractive Index Profiles</text>
-<rect x="10" y="20" width="160" height="60" rx="4" fill="#0d1117" stroke="#333" stroke-width="1"/>
-<text x="90" y="36" text-anchor="middle" font-size="9" fill="#90a4ae" font-family="monospace">Step-Index</text>
-<rect x="50" y="40" width="80" height="30" rx="2" fill="#1a237e" opacity=".8"/>
-<text x="90" y="58" text-anchor="middle" font-size="8" fill="#90caf9" font-family="monospace">n₁ (core)</text>
-<rect x="10" y="40" width="40" height="30" fill="#0d1117"/><rect x="130" y="40" width="40" height="30" fill="#0d1117"/>
-<text x="30" y="58" text-anchor="middle" font-size="8" fill="#546e7a" font-family="monospace">n₂</text>
-<text x="150" y="58" text-anchor="middle" font-size="8" fill="#546e7a" font-family="monospace">n₂</text>
-<rect x="185" y="20" width="165" height="60" rx="4" fill="#0d1117" stroke="#333" stroke-width="1"/>
-<text x="268" y="36" text-anchor="middle" font-size="9" fill="#90a4ae" font-family="monospace">Graded-Index</text>
-<path d="M185,70 Q268,35 350,70" fill="#1a237e88" stroke="#42a5f5" stroke-width="2"/>
-<text x="10" y="95" font-size="9" fill="#90a4ae" font-family="monospace">NA=√(n₁²-n₂²)  θc=arcsin(n₂/n₁)  BW·L limited by modal dispersion</text>
-</svg></div>
+<h4>Overview — Fiber Optic Communications</h4>
+<p>Optical fiber uses light (near-infrared) guided within glass to transmit data at extraordinary rates with minimal loss. Theoretical capacity exceeds 100 Tbps per fiber — orders of magnitude beyond copper. Fiber has replaced copper for all long-distance and high-capacity links and is rapidly extending to the access network (FTTH/FTTB) (Frenzel, Ch. 16; Tomasi, Ch. 22).</p>
+<p>Light is guided by <b>total internal reflection (TIR)</b>: when light in a denser core (n₁) strikes the cladding (n₂) interface at an angle greater than the <b>critical angle θ_c</b>, it is totally reflected. The <b>Numerical Aperture (NA)</b> defines the acceptance cone (Blake, Ch. 16).</p>
 <div class="formula-row">
-  <div class="formula-box">NA = √(n₁²−n₂²) = n₁·√(2Δ)</div>
-  <div class="formula-box">θ_c = arcsin(n₂/n₁)</div>
+  <div class="formula-box">TIR: θ_c = arcsin(n₂/n₁)</div>
+  <div class="formula-box">NA = √(n₁²−n₂²)</div>
   <div class="formula-box">Δ = (n₁−n₂)/n₁</div>
+  <div class="formula-box">NA = n₁·√(2Δ)</div>
 </div>
+<div class="svg-wrap"><svg width="420" height="130" viewBox="0 0 420 130" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">Fiber Types: Step-Index MMF | Graded-Index MMF | Single-Mode</text>
+<text x="70" y="27" text-anchor="middle" font-size="8" fill="#90a4ae">Step-Index MMF</text>
+<rect x="18" y="33" width="104" height="16" rx="2" fill="#1a237e" opacity=".85"/>
+<rect x="18" y="49" width="104" height="14" rx="2" fill="#0d1117" opacity=".5"/>
+<rect x="18" y="63" width="104" height="14" rx="2" fill="#0d1117" opacity=".5"/>
+<line x1="18" y1="41" x2="48" y2="55" stroke="#ffd740" stroke-width="1.2"/><line x1="48" y1="55" x2="78" y2="41" stroke="#ffd740" stroke-width="1.2"/><line x1="78" y1="41" x2="108" y2="55" stroke="#ffd740" stroke-width="1.2"/>
+<line x1="18" y1="41" x2="122" y2="41" stroke="#a5d6a7" stroke-width="1.2"/>
+<text x="70" y="92" text-anchor="middle" font-size="7" fill="#ffd740">High modal dispersion</text>
+<text x="70" y="103" text-anchor="middle" font-size="7" fill="#78909c">50/62.5μm core</text>
+<text x="210" y="27" text-anchor="middle" font-size="8" fill="#90a4ae">Graded-Index MMF</text>
+<path d="M156,77 Q210,28 264,77" fill="#1a237e55" stroke="#90caf9" stroke-width="1.5"/>
+<path d="M156,77 Q210,52 264,77" fill="none" stroke="#ffd740" stroke-width="1.2"/>
+<line x1="156" y1="57" x2="264" y2="57" stroke="#a5d6a7" stroke-width="1.2"/>
+<text x="210" y="92" text-anchor="middle" font-size="7" fill="#a5d6a7">Reduced modal dispersion</text>
+<text x="210" y="103" text-anchor="middle" font-size="7" fill="#78909c">Parabolic index profile</text>
+<text x="355" y="27" text-anchor="middle" font-size="8" fill="#90a4ae">Single-Mode (SMF)</text>
+<rect x="308" y="52" width="94" height="10" rx="2" fill="#1a237e"/>
+<rect x="308" y="42" width="94" height="10" rx="2" fill="#0d1117" opacity=".4"/>
+<rect x="308" y="62" width="94" height="10" rx="2" fill="#0d1117" opacity=".4"/>
+<line x1="308" y1="57" x2="402" y2="57" stroke="#4caf50" stroke-width="2.5"/>
+<text x="355" y="92" text-anchor="middle" font-size="7" fill="#4caf50">No modal dispersion</text>
+<text x="355" y="103" text-anchor="middle" font-size="7" fill="#78909c">8–9μm core, 125μm OD</text>
+<text x="10" y="120" font-size="7" fill="#78909c">Transmission windows: 850nm (1st, MMF), 1310nm (2nd, zero-dispersion SMF), 1550nm (3rd, min loss 0.2dB/km)</text>
+</svg></div>
+<h4>Fiber Loss, Dispersion &amp; Amplification</h4>
 <ul>
-  <li>Total internal reflection: angle of incidence &gt; critical angle θ_c</li>
-  <li><b>SMF</b>: single-mode; core ≈9 μm; lowest dispersion; long haul</li>
-  <li><b>MMF</b>: multimode; core 50/62.5 μm; step-index or graded-index</li>
-  <li>Losses: absorption, scattering (Rayleigh), bending (macro/micro)</li>
-  <li>Windows: 850 nm (1st), 1310 nm (2nd, zero-dispersion), 1550 nm (3rd, lowest loss)</li>
-  <li>Chromatic dispersion: different wavelengths travel at different speeds</li>
-  <li>EDFA: erbium-doped fiber amplifier; 1550 nm window; replaces repeaters</li>
-  <li>WDM / DWDM: wavelength-division multiplexing; many λ on one fiber</li>
-  <li>dB loss budget: source power − min receiver sensitivity ≥ total path loss</li>
+  <li><b>Attenuation</b>: 850 nm ≈2.5 dB/km; 1310 nm ≈0.35 dB/km; 1550 nm ≈0.2 dB/km (SMF)</li>
+  <li><b>Rayleigh scattering</b>: dominant loss at short wavelengths; density fluctuations in glass; ∝ 1/λ⁴</li>
+  <li><b>Chromatic dispersion</b>: different wavelengths travel at different speeds; limits bandwidth–distance; ps/(nm·km)</li>
+  <li><b>Modal dispersion</b>: different modes arrive at different times; step-index MMF only; eliminated in SMF</li>
+  <li><b>WDM/DWDM</b>: multiple wavelengths on one fiber; DWDM 0.4 nm spacing; 80+ channels; ITU-T G.694 grid</li>
+  <li><b>EDFA</b>: Erbium-Doped Fiber Amplifier; optically amplifies 1530–1565 nm; up to +30 dB gain; enables transoceanic links without regeneration</li>
+  <li>Fiber types: G.652 (standard SMF), G.653 (DSF), G.655 (NZ-DSF), G.657 (bend-insensitive, FTTH)</li>
+  <li>Power budget: P_source − P_sensitivity ≥ total loss + margin; connector ≈0.5 dB; splice ≈0.1 dB; fiber ≈0.2 dB/km</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 16.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 22.</li>
+  <li>Blake, R. (2002). <i>Electronic Communication Systems</i>, 2nd ed. Ch. 16.</li>
+  <li>Saleh, B.E.A. &amp; Teich, M.C. (2019). <i>Fundamentals of Photonics</i>, 3rd ed. Wiley. Ch. 9–10.</li>
 </ul>
 </div></div>
 <div class="q" id="fo-ps1-q1" data-ans="c"><div class="qh"><div class="qn">1</div><div class="qt">The medium used to transmit light in fiber optic systems is ____</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Copper wire</li><li data-ltr="b">b. Coaxial cable</li><li class="ok" data-ltr="c">c. Silica glass or plastic fiber</li><li data-ltr="d">d. Waveguide</li></ul></div>
@@ -1742,21 +2202,48 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="nav-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="nav-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>NAVIGATIONAL AIDS – PROBLEM SET 1 <span class="bc">70 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Navigational Aids</h4>
-<div class="formula-row">
-  <div class="formula-box">VOR bearing: phase diff between ref and var signal</div>
-  <div class="formula-box">DME: distance = (t·c)/2 (round trip)</div>
-</div>
+<h4>Overview — Navigational Aids (NAVAIDS)</h4>
+<p>NAVAIDs provide position, bearing, distance, and approach guidance to aircraft and ships. Modern aviation uses VOR/ILS/DME (ground-based) and GPS (space-based). Every commercial aircraft must be capable of instrument approaches using NAVAID guidance (Frenzel, Ch. 21; Tomasi, Ch. 24).</p>
+<div class="svg-wrap"><svg width="420" height="135" viewBox="0 0 420 135" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">ILS — Instrument Landing System Components</text>
+<rect x="180" y="108" width="230" height="20" rx="3" fill="#1b3a00" stroke="#4caf50" stroke-width="1.5"/>
+<text x="295" y="122" text-anchor="middle" font-size="8" fill="#a5d6a7">Runway</text>
+<line x1="50" y1="38" x2="290" y2="116" stroke="#ffd740" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="130" y="62" font-size="7" fill="#ffd740">3° Glideslope</text>
+<path d="M180,115 Q100,58 30,28" fill="none" stroke="#90caf9" stroke-width="1.5" stroke-dasharray="4,3"/>
+<path d="M180,115 Q100,78 30,48" fill="none" stroke="#90caf9" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="8" y="24" font-size="7" fill="#90caf9">Localizer ±2.5°</text>
+<text x="8" y="34" font-size="7" fill="#78909c">108–112 MHz</text>
+<line x1="200" y1="108" x2="200" y2="73" stroke="#ef9a9a" stroke-width="2"/>
+<text x="205" y="70" font-size="7" fill="#ef9a9a">GS 329–335 MHz</text>
+<line x1="98" y1="93" x2="98" y2="108" stroke="#4fc3f7" stroke-width="1.5"/>
+<text x="98" y="89" text-anchor="middle" font-size="7" fill="#4fc3f7">OM 7.2km</text>
+<line x1="148" y1="100" x2="148" y2="108" stroke="#ffd740" stroke-width="1.5"/>
+<text x="148" y="96" text-anchor="middle" font-size="7" fill="#ffd740">MM 1.0km</text>
+<line x1="173" y1="106" x2="173" y2="108" stroke="#fff" stroke-width="1.5"/>
+<text x="173" y="102" text-anchor="middle" font-size="7" fill="#fff">IM</text>
+<text x="10" y="130" font-size="7" fill="#546e7a">CAT I: DH=200ft RVR=550m | CAT II: DH=100ft RVR=300m | CAT IIIa/b/c: autoland</text>
+</svg></div>
+<h4>VOR &amp; Marker Beacons</h4>
 <ul>
-  <li><b>VOR</b>: VHF Omnidirectional Range; 108–118 MHz; bearing info; ±1° accuracy</li>
-  <li><b>ILS</b>: Instrument Landing System; localizer (108–112 MHz) + glideslope (329–335 MHz) + marker beacons</li>
-  <li><b>DME</b>: Distance Measuring Equipment; paired with VOR (VORDME); 962–1213 MHz</li>
-  <li><b>TACAN</b>: military; combined bearing + distance; co-located with VOR = VORTAC</li>
-  <li><b>GPS</b>: 24 satellites; L1=1575.42 MHz, L2=1227.6 MHz; ±15m (SPS), &lt;1m (PPS)</li>
-  <li><b>Loran-C</b>: 100 kHz; hyperbolic navigation; master + slave stations</li>
-  <li><b>NDB</b>: Non-Directional Beacon; 190–415 kHz; used with ADF</li>
-  <li><b>Radar altimeter</b>: FM-CW; measures height above terrain; 4.3 GHz</li>
-  <li>Marker beacons: outer (400 Hz, blue), middle (1300 Hz, amber), inner (3000 Hz, white)</li>
+  <li><b>VOR</b>: 108–118 MHz; provides magnetic bearing; reference phase (30 Hz FM on 9960 Hz sub-carrier, omnidirectional) vs. variable phase (30 Hz AM, rotating cardioid); phase difference = magnetic bearing TO station; accuracy ±1–2°</li>
+  <li><b>Localizer</b>: 108–112 MHz; lateral guidance; 150 Hz left, 90 Hz right; on course when equal; ±2.5° coverage</li>
+  <li><b>Glideslope</b>: 329–335 MHz; vertical guidance (3° standard); 150 Hz above path, 90 Hz below</li>
+  <li><b>Marker beacons</b>: 75 MHz upward fan beams; OM (400 Hz, blue, 7.2 km), MM (1300 Hz, amber, 1.0 km), IM (3000 Hz, white, near threshold)</li>
+</ul>
+<h4>DME, GPS &amp; ADF/NDB</h4>
+<ul>
+  <li><b>DME</b>: 962–1213 MHz; aircraft interrogates, ground transponder replies after 50 μs; round-trip time → slant range; accuracy ±185 m</li>
+  <li><b>GPS</b>: 24 MEO satellites at 20,200 km; L1 = 1575.42 MHz (C/A &amp; P code), L2 = 1227.6 MHz; 4 satellites for 3D fix; SPS accuracy ±15 m; WAAS/SBAS corrects to &lt;3 m</li>
+  <li><b>ADF/NDB</b>: NDB 190–415 kHz; ADF in aircraft measures bearing TO station; oldest NAVAID still in use</li>
+  <li><b>TCAS</b>: aircraft-to-aircraft transponder; issues Resolution Advisories; mandatory on large commercial aircraft</li>
+  <li><b>Loran-C</b>: 100 kHz; hyperbolic positioning; being decommissioned as GPS becomes universal</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 21.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 24.</li>
+  <li>Kaplan, E.D. &amp; Hegarty, C. (2006). <i>Understanding GPS</i>, 2nd ed. Artech House.</li>
 </ul>
 </div></div>
 <div class="q" id="nav-ps1-q1" data-ans="b"><div class="qh"><div class="qn">1</div><div class="qt">The Doppler effect in radar is used to measure ____</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li data-ltr="a">a. Target range</li><li class="ok" data-ltr="b">b. Target velocity (speed)</li><li data-ltr="c">c. Target size</li><li data-ltr="d">d. Target altitude</li></ul></div>
@@ -1832,22 +2319,61 @@ nav#toc li a{display:flex;align-items:center}
 </div></section>
 <section class="ps" id="lt-ps1" data-lazy="1"><h2><svg class="sec-ring" viewBox="0 0 36 36" data-sid="lt-ps1"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#2a2a3e" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="#4caf50" stroke-width="3" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>LATEST TECHNOLOGIES – PROBLEM SET 1 <span class="bc">105 Questions</span></h2><div class="psi">
 <div class="concept-card"><button class="concept-toggle" onclick="toggleConcept(this)">📚 Key Concepts &amp; Formulas <span class="cc-arrow">▼</span></button><div class="concept-body">
-<h4>Latest Technologies</h4>
+<h4>Overview — Latest Technologies in Communications</h4>
+<p>The communications landscape evolves rapidly. IoT, SDR, VoIP, advanced video compression, and ATM protocols are all heavily tested in the ECE board exam. This section covers the most current and frequently appearing topics (Frenzel, Ch. 22–23).</p>
 <div class="formula-row">
-  <div class="formula-box">Wi-Fi 6 (802.11ax): OFDMA, 1.2 Gbps+ (2.4/5 GHz)</div>
-  <div class="formula-box">Bluetooth 5: 2 Mbps, 40 m range, 2.4 GHz ISM</div>
+  <div class="formula-box">ATM cell: 53 bytes = 5 (header) + 48 (payload)</div>
+  <div class="formula-box">VoIP G.711: 64 kbps PCM (μ-law or A-law)</div>
+  <div class="formula-box">G.729: 8 kbps CS-ACELP; toll-quality voice</div>
+  <div class="formula-box">VoIP QoS: delay &lt;150ms, jitter &lt;30ms, loss &lt;1%</div>
 </div>
+<div class="svg-wrap"><svg width="420" height="115" viewBox="0 0 420 115" style="background:#1a1f3e;border-radius:8px;font-family:monospace">
+<text x="10" y="13" font-size="9" fill="#90caf9" font-weight="bold">MPEG GOP Structure &amp; IoT LPWAN Comparison</text>
+<rect x="10" y="22" width="46" height="52" rx="4" fill="#1a237e" stroke="#90caf9" stroke-width="2"/>
+<text x="33" y="50" text-anchor="middle" font-size="18" fill="#90caf9" font-weight="bold">I</text>
+<text x="33" y="80" text-anchor="middle" font-size="7" fill="#90a4ae">Intra</text>
+<rect x="64" y="30" width="36" height="44" rx="3" fill="#4a1f00" stroke="#ffd740" stroke-width="1.5"/>
+<text x="82" y="56" text-anchor="middle" font-size="16" fill="#ffd740" font-weight="bold">B</text>
+<text x="82" y="80" text-anchor="middle" font-size="7" fill="#ffd740">Bidir</text>
+<rect x="106" y="30" width="36" height="44" rx="3" fill="#4a1f00" stroke="#ffd740" stroke-width="1.5"/>
+<text x="124" y="56" text-anchor="middle" font-size="16" fill="#ffd740" font-weight="bold">B</text>
+<rect x="148" y="26" width="40" height="48" rx="3" fill="#1b3a00" stroke="#a5d6a7" stroke-width="1.5"/>
+<text x="168" y="53" text-anchor="middle" font-size="16" fill="#a5d6a7" font-weight="bold">P</text>
+<text x="168" y="80" text-anchor="middle" font-size="7" fill="#a5d6a7">Predict</text>
+<rect x="195" y="30" width="36" height="44" rx="3" fill="#4a1f00" stroke="#ffd740" stroke-width="1.5"/>
+<text x="213" y="56" text-anchor="middle" font-size="16" fill="#ffd740" font-weight="bold">B</text>
+<rect x="237" y="22" width="46" height="52" rx="4" fill="#1a237e" stroke="#90caf9" stroke-width="2"/>
+<text x="260" y="50" text-anchor="middle" font-size="18" fill="#90caf9" font-weight="bold">I</text>
+<text x="10" y="100" font-size="7" fill="#78909c">I=self-contained(large) B=bi-directional(smallest) P=forward-predicted(medium) GOP=Group of Pictures</text>
+<text x="295" y="22" font-size="8" fill="#90a4ae">LPWAN:</text>
+<text x="295" y="34" font-size="7" fill="#a5d6a7">LoRa: 868/915MHz 15km</text>
+<text x="295" y="45" font-size="7" fill="#a5d6a7">Sigfox: 100Hz UNB 40km</text>
+<text x="295" y="56" font-size="7" fill="#a5d6a7">NB-IoT: LTE infra deep</text>
+<text x="295" y="67" font-size="7" fill="#ffd740">Zigbee: 2.4GHz mesh</text>
+<text x="295" y="78" font-size="7" fill="#ffd740">Z-Wave: 908MHz home</text>
+</svg></div>
+<h4>Video Compression (MPEG/H.26x)</h4>
 <ul>
-  <li><b>IoT</b>: interconnection of smart devices; protocols: MQTT, CoAP, Zigbee, Z-Wave</li>
-  <li><b>LPWAN</b>: LoRa (915 MHz ISM), Sigfox, NB-IoT; low power, wide area, low data rate</li>
-  <li><b>SDR</b>: software-defined radio; reconfigurable via software; GNU Radio, USRP</li>
-  <li><b>MIMO/Beamforming</b>: spatial multiplexing; massive MIMO in 5G</li>
-  <li><b>Cloud/Edge computing</b>: distributed processing; latency reduction</li>
-  <li><b>ATM</b>: 53-byte cells (5 header + 48 payload); fixed cell size</li>
-  <li><b>VoIP</b>: H.323 / SIP signaling; RTP transport; G.711/G.729 codecs</li>
-  <li><b>MPEG-1</b>: VCD (1.5 Mbps); MPEG-2: DVD/digital TV; MPEG-4: streaming/mobile</li>
-  <li><b>JPEG</b>: DCT-based lossy; GIF: 256 colors, lossless LZW; PNG: lossless</li>
-  <li><b>HDTV</b>: 1080i/720p/1080p/4K; 16:9 aspect; ATSC standard</li>
+  <li><b>MPEG-1</b>: 1.5 Mbps; VCD; MP3 audio derived from MPEG-1 Layer 3</li>
+  <li><b>MPEG-2 (H.262)</b>: 2–15 Mbps; DVD, Digital TV, Blu-ray; DVB-S/T/C; SD and HD</li>
+  <li><b>MPEG-4 / H.264 (AVC)</b>: internet streaming, mobile video; 4× better compression than MPEG-2</li>
+  <li><b>H.265 (HEVC)</b>: 4K/8K; 50% better than H.264; Netflix, YouTube 4K; Ultra HD Blu-ray</li>
+  <li><b>MPEG-7</b>: NOT a codec — a <i>metadata standard</i> for describing multimedia content; enables content-based search</li>
+  <li>DCT: Discrete Cosine Transform; converts 8×8 pixel blocks to frequency domain; basis of JPEG and all MPEG codecs</li>
+</ul>
+<h4>VoIP &amp; ATM</h4>
+<ul>
+  <li><b>SIP</b> (RFC 3261): text-based signaling (like HTTP); establishes, modifies, terminates sessions; standard for VoIP, WebRTC, IMS</li>
+  <li><b>H.323</b>: ITU-T suite; H.245 (capability), H.225 (signaling), RTP (media); enterprise PBX</li>
+  <li><b>RTP/RTCP</b>: UDP-based real-time media transport; timestamps for sync; RTCP provides QoS feedback</li>
+  <li><b>ATM</b>: fixed 53-byte cells (5 header + 48 payload); guarantees QoS; VPI + VCI + PT + CLP + HEC in header</li>
+  <li><b>MQTT</b>: lightweight publish-subscribe; TCP/IP; designed for constrained IoT devices; QoS 0/1/2</li>
+</ul>
+<h4>References</h4>
+<ul style="font-size:11px;color:#78909c">
+  <li>Frenzel, L.E. (2016). <i>Principles of Electronic Communication Systems</i>, 4th ed. Ch. 22–23.</li>
+  <li>Tomasi, W. (2004). <i>Electronic Communications Systems</i>, 5th ed. Ch. 23.</li>
+  <li>Stallings, W. (2017). <i>Data and Computer Communications</i>, 10th ed. Ch. 21.</li>
 </ul>
 </div></div>
 <div class="q" id="lt-ps1-q1" data-ans="a"><div class="qh"><div class="qn">1</div><div class="qt">Bluetooth was named after ____</div><button class="bmark-btn" title="Bookmark this question" onclick="toggleBookmark(this.closest('.q').id)">🏷</button></div><ul class="ch"><li class="ok" data-ltr="a">a. Harold Bluetooth, a Viking king who united Scandinavian tribes</li><li data-ltr="b">b. An engineer at Ericsson</li><li data-ltr="c">c. A color of light</li><li data-ltr="d">d. The frequency band used</li></ul></div>
