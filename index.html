@@ -118,10 +118,17 @@ section.ps h2{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padd
 .setup-box{background:#1e1e2e;border-radius:12px;padding:16px 20px;margin-bottom:14px;border:1px solid #2a2a3e}
 .setup-box h3{color:#78909c;font-size:11px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
 .topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:8px}
-.topic-label{display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:7px;cursor:pointer;border:1.5px solid #2a2a3e;color:#90a4ae;font-size:12.5px;transition:all .15s;user-select:none}
-.topic-label:hover{border-color:#3f51b5;color:#90caf9}
-.topic-label.sel{background:#1a237e22;border-color:#3f51b5;color:#90caf9}
+.topic-label{display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:7px;cursor:pointer;border:1.5px solid #2a2a3e;color:#90a4ae;font-size:12.5px;transition:all .15s;user-select:none;position:relative}
+.topic-label:hover{border-color:#3f51b5;color:#90caf9;background:#1a237e11}
+.topic-label.sel{background:#1a237e33;border-color:#3f51b5;color:#90caf9;font-weight:600}
+.topic-label .chk{width:16px;height:16px;border:2px solid #546e7a;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;transition:all .12s}
+.topic-label.sel .chk{background:#3f51b5;border-color:#3f51b5;color:#fff}
 .topic-label input{display:none}
+.topic-grp-hdr{grid-column:1/-1;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:#546e7a;padding:6px 2px 2px;border-bottom:1px solid #1e1e2e;margin-top:4px;display:flex;align-items:center;justify-content:space-between}
+.topic-grp-hdr button{font-size:10px;padding:2px 8px;border-radius:4px;background:none;border:1px solid #333;color:#78909c;cursor:pointer}
+.topic-grp-hdr button:hover{background:#1a237e;border-color:#3f51b5;color:#90caf9}
+#sel-counter{font-size:12px;color:#78909c;margin-left:10px;font-weight:normal}
+#sel-counter span{color:#90caf9;font-weight:700}
 .setup-row{display:flex;gap:12px;flex-wrap:wrap}
 .setup-field{flex:1;min-width:130px;display:flex;flex-direction:column;gap:5px}
 .setup-field label{font-size:11px;color:#78909c;text-transform:uppercase;letter-spacing:.5px}
@@ -3216,7 +3223,7 @@ nav#toc li a{display:flex;align-items:center}
     <button class="back-link" onclick="showLanding()">← Back</button>
     <h2>🎯 Quiz Setup</h2>
     <div class="setup-box">
-      <h3>Topics &nbsp;<button class="sel-all-btn" onclick="selectAllTopics(true)">Select All</button>&nbsp;<button class="sel-all-btn" onclick="selectAllTopics(false)">None</button></h3>
+      <h3>Topics <span id="sel-counter"><span>21</span> / 21 topics selected</span>&nbsp;&nbsp;<button class="sel-all-btn" onclick="selectAllTopics(true)">&#10003; All</button>&nbsp;<button class="sel-all-btn" onclick="selectAllTopics(false)">&#9633; None</button></h3>
       <div class="topic-grid" id="topic-grid"></div>
     </div>
     <div class="setup-box">
@@ -3604,33 +3611,89 @@ function showSetup(){
   el('quiz-results').style.display='none';
   buildTopicGrid();
 }
+/* ── Topic groups for the quiz selector ── */
+var TOPIC_GROUPS=[
+  {grp:'Modulation',sids:['mod-ps1','mod-ps2','mod-ps3']},
+  {grp:'Datacom & Digital Tel.',sids:['dat-ps1','dat-ps2']},
+  {grp:'Transmission Lines',sids:['tl-ps1','tl-ps2']},
+  {grp:'Radiowave & Antenna',sids:['rp-ps1','rp-ps2','rp-ps3']},
+  {grp:'ECE Laws',sids:['law-ps1']},
+  {grp:'Acoustics & Broadcasting',sids:['ac-ps1']},
+  {grp:'Microwaves',sids:['mw-ps1','mw-ps2']},
+  {grp:'Satellite Comms',sids:['sat-ps1']},
+  {grp:'Wireline & Cellular',sids:['wc-ps1','wc-ps2','wc-ps3']},
+  {grp:'Fiber Optics',sids:['fo-ps1']},
+  {grp:'Navigational Aids',sids:['nav-ps1']},
+  {grp:'Latest Technologies',sids:['lt-ps1']},
+];
 function buildTopicGrid(){
   var grid=el('topic-grid');
-  if(grid.children.length>0) return;
+  if(grid.children.length>0){updateSelCounter();return;}
   var secs={},secTitles={};
   QB.forEach(function(q){
     secs[q.section]=(secs[q.section]||0)+1;
     secTitles[q.section]=q.secTitle;
   });
-  Object.keys(secs).forEach(function(sid){
-    var acc=getTopicAccuracy(sid);
-    var pct=acc.attempted?Math.round(acc.correct/acc.attempted*100):null;
-    var pctStr=pct!==null?(' — '+pct+'%'):'';
-    var lbl=document.createElement('label');
-    lbl.className='topic-label sel';
-    lbl.dataset.sid=sid;
-    var cb=document.createElement('input');
-    cb.type='checkbox';cb.checked=true;
-    lbl.appendChild(cb);
-    lbl.appendChild(document.createTextNode(' '+secTitles[sid]+' ('+secs[sid]+')'+pctStr));
-    lbl.addEventListener('click',function(){lbl.classList.toggle('sel');});
-    grid.appendChild(lbl);
+  TOPIC_GROUPS.forEach(function(g){
+    /* group header row */
+    var hdr=document.createElement('div');
+    hdr.className='topic-grp-hdr';
+    var grpSidsInData=g.sids.filter(function(s){return secs[s];});
+    if(!grpSidsInData.length) return;
+    hdr.innerHTML='<span>'+g.grp+'</span>'
+      +'<button onclick="selectGroup('+JSON.stringify(g.sids)+',true)" title="Select all in group">All</button>'
+      +'<button onclick="selectGroup('+JSON.stringify(g.sids)+',false)" title="Deselect all in group">None</button>';
+    grid.appendChild(hdr);
+    /* topic labels */
+    grpSidsInData.forEach(function(sid){
+      var acc=getTopicAccuracy(sid);
+      var pct=acc.attempted?Math.round(acc.correct/acc.attempted*100):null;
+      var pctStr=pct!==null?(' — '+pct+'%'):'';
+      var lbl=document.createElement('label');
+      lbl.className='topic-label sel';
+      lbl.dataset.sid=sid;
+      /* visible checkmark box */
+      var chk=document.createElement('span');
+      chk.className='chk';
+      chk.textContent='\u2713';
+      lbl.appendChild(chk);
+      var cb=document.createElement('input');
+      cb.type='checkbox';cb.checked=true;
+      lbl.appendChild(cb);
+      var txt=document.createElement('span');
+      txt.textContent=secTitles[sid]+' ('+secs[sid]+')'+pctStr;
+      lbl.appendChild(txt);
+      lbl.addEventListener('click',function(){
+        lbl.classList.toggle('sel');
+        chk.textContent=lbl.classList.contains('sel')? '\u2713' : '';
+        updateSelCounter();
+      });
+      grid.appendChild(lbl);
+    });
   });
+  updateSelCounter();
 }
-function selectAllTopics(sel){
+function updateSelCounter(){
+  var total=document.querySelectorAll('#topic-grid .topic-label').length;
+  var sel=document.querySelectorAll('#topic-grid .topic-label.sel').length;
+  var ctr=el('sel-counter');
+  if(ctr) ctr.innerHTML='<span>'+sel+'</span> / '+total+' topics selected';
+}
+function selectAllTopics(v){
   document.querySelectorAll('#topic-grid .topic-label').forEach(function(l){
-    if(sel)l.classList.add('sel');else l.classList.remove('sel');
+    if(v){l.classList.add('sel');l.querySelector('.chk').textContent='\u2713';}
+    else{l.classList.remove('sel');l.querySelector('.chk').textContent='';}
   });
+  updateSelCounter();
+}
+function selectGroup(sids,v){
+  sids.forEach(function(sid){
+    var lbl=document.querySelector('#topic-grid .topic-label[data-sid="'+sid+'"]');
+    if(!lbl) return;
+    if(v){lbl.classList.add('sel');lbl.querySelector('.chk').textContent='\u2713';}
+    else{lbl.classList.remove('sel');lbl.querySelector('.chk').textContent='';}
+  });
+  updateSelCounter();
 }
 function startQuiz(){
   var sels=[];
