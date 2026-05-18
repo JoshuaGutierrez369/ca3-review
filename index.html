@@ -4082,7 +4082,7 @@ function buildBank(){
         sol:div.dataset.sol||'',
         expl:div.dataset.expl||'',
         section:sec.id,
-        secTitle:sec.querySelector('h2')?sec.querySelector('h2').childNodes[0].textContent.trim():sec.id
+        secTitle:(function(){var h2=sec.querySelector('h2');if(!h2)return sec.id;var t='';h2.childNodes.forEach(function(n){if(n.nodeType===3)t+=n.textContent;});return t.trim()||sec.id;})()
       });
     });
   });
@@ -4115,31 +4115,8 @@ function showSetup(){
 }
 function el(id){return document.getElementById(id);}
 
-function buildTopicGrid(){
-  var grid=el('topic-grid');
-  if(grid.children.length>0) return;
-  var secs={},secTitles={};
-  QB.forEach(function(q){
-    secs[q.section]=(secs[q.section]||0)+1;
-    secTitles[q.section]=q.secTitle;
-  });
-  Object.keys(secs).forEach(function(sid){
-    var lbl=document.createElement('label');
-    lbl.className='topic-label sel';
-    lbl.dataset.sid=sid;
-    var cb=document.createElement('input');
-    cb.type='checkbox'; cb.checked=true;
-    lbl.appendChild(cb);
-    lbl.appendChild(document.createTextNode(' '+secTitles[sid]+' ('+secs[sid]+')'));
-    lbl.addEventListener('click',function(){lbl.classList.toggle('sel');});
-    grid.appendChild(lbl);
-  });
-}
-function selectAllTopics(sel){
-  document.querySelectorAll('#topic-grid .topic-label').forEach(function(l){
-    if(sel) l.classList.add('sel'); else l.classList.remove('sel');
-  });
-}
+/* buildTopicGrid and selectAllTopics defined above */
+/* selectAllTopics defined above */
 function startQuiz(){
   var sels=[];
   document.querySelectorAll('#topic-grid .topic-label.sel').forEach(function(l){sels.push(l.dataset.sid);});
