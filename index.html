@@ -4104,8 +4104,11 @@ document.addEventListener('DOMContentLoaded',function(){
   var n=document.querySelectorAll('.q').length;
   var tq=el('total-qs');if(tq) tq.textContent=n;
   updateAllRings();
-  // Always show home screen on entry so user can choose their study mode
-  openQuizOverlay();
+  // Home vs deep link from manifest shortcuts
+  var h=(location.hash||'').toLowerCase();
+  if(h==='#quiz'||h==='#quizbee'){ openQuizBee(); }
+  else if(h==='#dashboard'){ if(typeof closeQuizOverlay==='function') closeQuizOverlay(); if(typeof openDashboard==='function') openDashboard(); }
+  else { openQuizOverlay(); }
   wireHomeModeCards();
 });
 
@@ -4121,6 +4124,9 @@ if('serviceWorker' in navigator){
 (function(){
   function showHome(){
     if(typeof openQuizOverlay==='function'){
+      var h=(location.hash||'').toLowerCase();
+      if(h==='#quiz'||h==='#quizbee'){ if(typeof openQuizBee==='function') openQuizBee(); return; }
+      if(h==='#dashboard'){ if(typeof closeQuizOverlay==='function') closeQuizOverlay(); if(typeof openDashboard==='function') openDashboard(); return; }
       openQuizOverlay();
       return;
     }
